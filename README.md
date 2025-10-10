@@ -10,8 +10,6 @@ Bienvenue sur mon bot qui vous permettra de recevoir des notifications (voire é
 
 [ntfy.sh](https://ntfy.sh/) va vous permettre de recevoir des messages en fonction des channels auxquels vous décidez de vous abonner. Si vous souhaiter avoir un channel uniquement pour vous, le nom du topic que vous allez utiliser servira de clé donc pensez à en utiliser un long et complexe pour ne pas tomber sur le même qu'un autre utilisateur.
 
-Vous pouvez utiliser 2 canaux différents ici (ou un seul, selon votre volonté).
-
 ### 2. Compléter les variables :
 
 En fonction de vos besoins, il vous faut remplir les variables définies dès le début du code (si vous l'utilisez uniquement en notification, pas besoin d'entrer vos credentials...).
@@ -29,9 +27,7 @@ En fonction de vos besoins, il vous faut remplir les variables définies dès le
 - `ntfjour` Si true -> notif à 7h30 pour résumé de la journée
 - `skip` Si vous ne voulez pas utiliser la fonction attente pour l'émargement, vous pouvez la skip (faites attention...)
 - `ignoredCourses` Ajoutez les cours ou vous ne souhaitez pas émarger ni recevoir les notis
-- `topic1` utilisé pour envoyer les notifs relatives au cours
-- `topic2` utilisé pour annoncer le délai avant émargement et les notifs du bot \
-(encore une fois vous pouvez utiliser un seul topic si vous le préférez)
+- `topic` utilisé pour envoyer les notifs relatives au cours
 
 
 ### 3. Autoriser les accès pour votre script :
