@@ -25,7 +25,6 @@ En fonction de vos besoins, il vous faut remplir les variables définies dès le
 - `ntfemarger` Si true -> notif pour dire que le bot à émarger (si t'émarges avec le bot et que tu mets ça à false t'es un malade mental sache le)
 - `ntfweek` Si true -> notif début de semaine pour résumé de la semaine 
 - `ntfjour` Si true -> notif à 7h30 pour résumé de la journée
-- `skip` Si vous ne voulez pas utiliser la fonction attente pour l'émargement, vous pouvez la skip (faites attention...)
 - `ignoredCourses` Ajoutez les cours ou vous ne souhaitez pas émarger ni recevoir les notis
 - `topic` utilisé pour envoyer les notifs relatives au cours
 
