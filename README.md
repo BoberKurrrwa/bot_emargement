@@ -14,20 +14,21 @@ Bienvenue sur mon bot qui vous permettra de recevoir des notifications (voire é
 
 En fonction de vos besoins, il vous faut remplir les variables définies dès le début du code (si vous l'utilisez uniquement en notification, pas besoin d'entrer vos credentials...).
 
+- `emarger` Si true -> mode émargement | si false -> mode notification
+
 - `FORMATION` soit cyberdefense, cyberlog ou cyberdata
 - `A` votre année d'études, donc 3, 4 ou 5
 - `TP` votre TP, donc 1, 2, 3, 4, 5 ou 6
 - `username` votre username pour la connexion à moodle
 - `password` votre password pour la connexion à moodle
-- `emarger` Si true -> mode émargement | si false -> mode notification
+- `ignoredCourses` Ajoutez les cours ou vous ne souhaitez pas émarger ni recevoir les notis
+- `topic` utilisé pour envoyer les notifs relatives au cours
+
 - `ntftemps` Si true -> notif pour savoir le temps avant que l'on émarge automatiquement
 - `ntfcours` Si true -> notif pour rappeler d'émarger au cours
 - `ntfemarger` Si true -> notif pour dire que le bot à émarger (si t'émarges avec le bot et que tu mets ça à false t'es un malade mental sache le)
 - `ntfweek` Si true -> notif début de semaine pour résumé de la semaine 
 - `ntfjour` Si true -> notif à 7h30 pour résumé de la journée
-- `ignoredCourses` Ajoutez les cours ou vous ne souhaitez pas émarger ni recevoir les notis
-- `topic` utilisé pour envoyer les notifs relatives au cours
-
 
 ### 3. Autoriser les accès pour votre script :
 
