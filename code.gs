@@ -13,8 +13,6 @@ var ntfemarger = false;//si true -> notif pour dire que le bot à émarger
 var ntfweek = false;//si true -> notif début de semaine pour résumé de la semaine 
 var ntfjour = false;//si true -> notif à 7h30 pour résumé de la journée
 
-var skip = false;//si vous ne voulez pas utiliser la fonction attente, vous pouvez la skip (faites attention...)
-
 const ignoredCourses = ["Activités GCC", "Activités HACK2G2"]; //Ajoutez les cours ou vous ne souhaitez pas émarger ni recevoir les notis
 const topic = ""; // utilisé pour envoyer les notifs relatives au cours
 
@@ -695,6 +693,8 @@ function formatTime(date) {
   return ("0" + date.getHours()).slice(-2) + ":" + ("0" + date.getMinutes()).slice(-2);
 }
 
+var skip = false;
+
 function scheduleDailyNotifications() {
   clearOldTriggers("sendSlotNotification");
   clearOldTriggers("scheduleDailyNotifications");
@@ -793,6 +793,8 @@ function timetime(){
   let timetime = hh + ":" + mm + ":" + ss;
   return timetime;
 }
+
+
 
 function sendSlotNotification() {
   const now = new Date();
