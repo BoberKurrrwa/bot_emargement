@@ -16,8 +16,7 @@ var ntfjour = false;//si true -> notif à 7h30 pour résumé de la journée
 var skip = false;//si vous ne voulez pas utiliser la fonction attente, vous pouvez la skip (faites attention...)
 
 const ignoredCourses = ["Activités GCC", "Activités HACK2G2"]; //Ajoutez les cours ou vous ne souhaitez pas émarger ni recevoir les notis
-const topic1 = ""; // topic1, utilisé pour envoyer les notifs relatives au cours
-const topic2 = ""; // topic2, utilisé pour annoncer le délai avant émargement et les notifs du bot
+const topic = ""; // utilisé pour envoyer les notifs relatives au cours
 
 const aujourdhui = new Date();
 var j = aujourdhui.getDate();
@@ -490,7 +489,7 @@ function withRetry(fn, maxRetries, delayMs) {
     }
   }
   if (ntfemarger = true){
-    sendNtfyNotification("Une erreur est survenue lors  de l'émargement, veuillez émarger manuellement", topic2);
+    sendNtfyNotification("Une erreur est survenue lors  de l'émargement, veuillez émarger manuellement", topic);
   }
   throw new Error("Échec après " + maxRetries + " tentatives : " + lastError);
 }
@@ -511,7 +510,7 @@ function attente(){
   Logger.log(laps);
   if (ntftemps === true){
   let temps = affichageTemps(laps);
-  sendNtfyNotification("Délai de "+temps.minmin+"m "+temps.secsec+"s"+" avant émargement", topic2);
+  sendNtfyNotification("Délai de "+temps.minmin+"m "+temps.secsec+"s"+" avant émargement", topic);
   }
   Utilities.sleep(laps1);
   Utilities.sleep(laps2);
@@ -688,7 +687,7 @@ function weeklySummary(){
   });
   resume += `\n\n🕒 Total semaine : ${formatSummary(totalHoursWeek)}`;
   if (ntfweek === true) {
-    sendNtfyNotification(resume, topic1);
+    sendNtfyNotification(resume, topic);
   }
 }
 
@@ -736,7 +735,7 @@ function scheduleDailyNotifications() {
   if (s.slotStart <= now && s.slotEnd > now) {
     Logger.log("On est déjà dans ce créneau → " + formatTime(s.slotStart)+"-" + formatTime(s.slotEnd));
     if (ntfcours === true) {
-      sendNtfyNotification("⚠️ Cours en cours : \n\n" + s.summary + ", \n" + s.location, topic1);
+      sendNtfyNotification("⚠️ Cours en cours : \n\n" + s.summary + ", \n" + s.location, topic);
     }
     skip=true;
     sendSlotNotification();
@@ -752,7 +751,7 @@ function scheduleDailyNotifications() {
 
   if (slotsToday == 0) {
     if (ntfjour === true) {
-      sendNtfyNotification("Eh beh mon salaud, t'en as de la chance, t'as pas cours aujourd'hui !!!", topic1);
+      sendNtfyNotification("Eh beh mon salaud, t'en as de la chance, t'as pas cours aujourd'hui !!!", topic);
   }} else {
     let eventsajd = events.filter(s => {
     const summaryOk = !ignoredCourses.some(word => s.summary.includes(word));
@@ -766,7 +765,7 @@ function scheduleDailyNotifications() {
     const ajd = eventsajd.map(ev =>
       formatTime(ev.start) + "-" + formatTime(ev.end) + " : " + ev.summary + ", " + ev.location +"\n").join("\n");
     if (ntfjour === true) {
-      sendNtfyNotification("📅 Planning du jour :\n\n" + ajd + "\n\n🕒 Total : " + formatSummary(totalHoursDay)+"\n", topic1);
+      sendNtfyNotification("📅 Planning du jour :\n\n" + ajd + "\n\n🕒 Total : " + formatSummary(totalHoursDay)+"\n", topic);
     }
   }
 }
@@ -803,7 +802,7 @@ function sendSlotNotification() {
   slotsNow.forEach(s => {
     if (Math.abs(s.slotStart.getTime() - now.getTime()) < 1800*1000) {
       if (ntfcours === true) {
-      sendNtfyNotification("📚 C'est l'heure d’émarger pour : \n\n" + s.summary + " \n\n" + formatTime(s.slotStart) + " à " + formatTime(s.slotEnd) + " \n\n" + s.location, topic1);
+      sendNtfyNotification("📚 C'est l'heure d’émarger pour : \n\n" + s.summary + " \n\n" + formatTime(s.slotStart) + " à " + formatTime(s.slotEnd) + " \n\n" + s.location, topic);
       }
       if (emarger === true){
         if (skip === false){//permet de skip l'attente si on le lance en étant déjà en cours
@@ -811,7 +810,7 @@ function sendSlotNotification() {
         }
         emargement();
         if (ntfemarger === true){
-          sendNtfyNotification("🤖 Je viens d'émarger pour vous à "+ timetime() +" pour votre cours de :\n\n"+ s.summary +"\n\nde " + formatTime(s.slotStart) + " à " + formatTime(s.slotEnd)+" !", topic2);
+          sendNtfyNotification("🤖 Je viens d'émarger pour vous à "+ timetime() +" pour votre cours de :\n\n"+ s.summary +"\n\nde " + formatTime(s.slotStart) + " à " + formatTime(s.slotEnd)+" !", topic);
         }
       }
     }
