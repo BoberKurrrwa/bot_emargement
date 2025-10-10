@@ -29,9 +29,9 @@ En fonction de vos besoins, il vous faut remplir les variables définies dès le
 - `ntfjour` Si true -> notif à 7h30 pour résumé de la journée
 - `skip` Si vous ne voulez pas utiliser la fonction attente pour l'émargement, vous pouvez la skip (faites attention...)
 - `ignoredCourses` Ajoutez les cours ou vous ne souhaitez pas émarger ni recevoir les notis
-- `topic1` topic1, utilisé pour envoyer les notifs relatives au cours
-- `topic2` topic2, utilisé pour annoncer le délai avant émargement et les notifs du bot
-  encore une fois vous pouvez utiliser un seul topic si vous le préférez)
+- `topic1` utilisé pour envoyer les notifs relatives au cours
+- `topic2` utilisé pour annoncer le délai avant émargement et les notifs du bot \
+(encore une fois vous pouvez utiliser un seul topic si vous le préférez)
 
 
 ### 3. Autoriser les accès pour votre script :
