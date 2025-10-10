@@ -1,20 +1,18 @@
+var emarger = false;
+
 FORMATION = "" //cyberdefense, cyberlog ou cyberdata
 A = "" //3, 4 ou 5
 TP = "" //1, 2, 3, 4, 5 ou 6
-
 var username = ""
 var password = ""
+const ignoredCourses = ["Activités GCC", "Activités HACK2G2"];
+const topic = "";
 
-var emarger = false; //Si true -> mode émargement, si false -> mode notification
-
-var ntftemps = false;//si true -> notif pour savoir le temps avant que l'on émarge automatiquement
-var ntfcours = false;//si true -> notif pour rappeler d'émarger au cours
-var ntfemarger = false;//si true -> notif pour dire que le bot à émarger
-var ntfweek = false;//si true -> notif début de semaine pour résumé de la semaine 
-var ntfjour = false;//si true -> notif à 7h30 pour résumé de la journée
-
-const ignoredCourses = ["Activités GCC", "Activités HACK2G2"]; //Ajoutez les cours ou vous ne souhaitez pas émarger ni recevoir les notis
-const topic = ""; // utilisé pour envoyer les notifs relatives au cours
+var ntftemps = false;
+var ntfcours = false;
+var ntfemarger = false;
+var ntfweek = false;
+var ntfjour = false;
 
 const aujourdhui = new Date();
 var j = aujourdhui.getDate();
