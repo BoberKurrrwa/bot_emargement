@@ -459,7 +459,7 @@ function testLogin() {
   link = extractAttendanceLink(link);
 
   if (link === null){
-    return;
+    return link;
   }
 
   let res14 = UrlFetchApp.fetch(link, {
@@ -481,7 +481,7 @@ function withRetry(fn, maxRetries, delayMs) {
   let lastError;
   for (let i = 0; i < maxRetries; i++) {
     try {
-      return fn(); // si ça marche → on retourne le résultat direct
+      return lien=fn(); // si ça marche → on retourne le résultat direct
     } catch (e) {
       lastError = e;
       Logger.log("Tentative " + (i+1) + " échouée : " + e.message);
@@ -495,7 +495,8 @@ function withRetry(fn, maxRetries, delayMs) {
 }
 
 function emargement(){
-  withRetry(testLogin, 15, 10);
+  var lien = withRetry(testLogin, 15, 10);
+  return lien;
 }
 
 
@@ -804,21 +805,25 @@ function sendSlotNotification() {
   slotsNow.forEach(s => {
     if (Math.abs(s.slotStart.getTime() - now.getTime()) < 1800*1000) {
       if (ntfcours === true) {
-      sendNtfyNotification("📚 C'est l'heure d’émarger pour : \n\n" + s.summary + " \n\n" + formatTime(s.slotStart) + " à " + formatTime(s.slotEnd) + " \n\n" + s.location, topic);
+      sendNtfyNotification("📚 C'est l'heure d’émarger pour : \n\n" + s.summary + " \n\n" + formatTime(s.slotStart) + " à " + formatTime(s.slotEnd) + " \n\n" + s.location, topic1);
       }
       if (emarger === true){
         if (skip === false){//permet de skip l'attente si on le lance en étant déjà en cours
           attente();
         }
-        emargement();
+        var lien=emargement();
         if (ntfemarger === true){
-          sendNtfyNotification("🤖 Je viens d'émarger pour vous à "+ timetime() +" pour votre cours de :\n\n"+ s.summary +"\n\nde " + formatTime(s.slotStart) + " à " + formatTime(s.slotEnd)+" !", topic);
+          if (lien === null){
+            sendNtfyNotification("Vous avez déjà émargé !", topic);
+          }
+          else {
+          sendNtfyNotification("🤖 Je viens d'émarger pour vous à "+ timetime() +" pour votre cours de :\n\n"+ s.summary +"\n\nde " + formatTime(s.slotStart) + " à " + formatTime(s.slotEnd)+" !", topic2);
+          }
         }
       }
     }
   });
 }
-
 function affichageTemps(secondes){
   const minmin = Math.floor(secondes / 60); 
   const secsec = secondes % 60;                
