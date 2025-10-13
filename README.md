@@ -35,13 +35,16 @@ Enfin, les variables concernant les notificaitons :
 - `ntfweek` Si true -> notif début de semaine pour résumé de la semaine 
 - `ntfjour` Si true -> notif à 7h30 pour résumé de la journée
 
-### 3. Autoriser les accès pour votre script :
+### 3. Exécuter la fonction _scheduleDailyNotifications_ et autoriser les accès à votre script :
 
-Google va vous demander de laisser les autorisations nécessaires afin que votre programme soit capable de s'exécuter en autonomie et qu'il puisse aller chercher des informations sur internet.
+Il ne vous manque plus qu'à exécuter la fonction _scheduleDailyNotifications_ et de laisser les choses faire ! Pour cela, sélectionner la fonction _scheduleDailyNotifications_ dans le menu déroulant : 
 
-### 4. Exécuter la fonction _scheduleDailyNotifications_ :
+<img width="1160" height="532" alt="image" src="https://github.com/user-attachments/assets/d2de86fc-d0e3-42fa-8c1c-ee7d2734b0b7" />
 
-Il ne vous manque plus qu'à exécuter la fonction _scheduleDailyNotifications_ et de laisser les choses faire !
+
+Et cliquez sur "Exécuter".
+
+Pas de panique si à la première exécution Google vous demande de laisser de lui donner certaines autorisations, elles sont nécessaires afin que votre programme soit capable de s'exécuter en autonomie et qu'il puisse aller chercher des informations sur internet.
 
 
 (Merci à 🔥[MTlyx](https://github.com/MTlyx)🔥 pour l'API)
