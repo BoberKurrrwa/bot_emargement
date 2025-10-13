@@ -458,6 +458,11 @@ function testLogin() {
   link = res13.getContentText()
   link = extractAttendanceLink(link);
 
+  if (link === null){
+    sendNtfyNotification("Vous avez déjà émargé manuellement !", topic);
+    return;
+  }
+
   let res14 = UrlFetchApp.fetch(link, {
         method: "get",
         headers: {
