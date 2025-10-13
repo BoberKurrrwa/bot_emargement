@@ -563,19 +563,17 @@ function getEventsWeekFromJson(jsonData) {
     const currentDay = aujourdhui;
     currentDay.setDate(j + i);
 
-    jsonData.plannings.forEach(planning => {
-      planning.events.forEach(ev => {
-        const start = new Date(ev.start);
-        const end = new Date(ev.end);
-        if (start.toDateString() === currentDay.toDateString()) {
-          eventsWeek.push({
-            summary: ev.name,
-            start,
-            end,
-            location: ev.location || ""
-          });
-        }
-      });
+    jsonData.forEach(ev => {
+      const start = new Date(ev.start);
+      const end = new Date(ev.end);
+      if (start.toDateString() === currentDay.toDateString()) {
+        eventsWeek.push({
+          summary: ev.name,
+          start,
+          end,
+          location: ev.location || ""
+        });
+      }
     });
   }
   return eventsWeek;
