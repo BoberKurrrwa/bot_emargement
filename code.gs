@@ -459,7 +459,6 @@ function testLogin() {
   link = extractAttendanceLink(link);
 
   if (link === null){
-    sendNtfyNotification("Vous avez déjà émargé manuellement !", topic);
     return;
   }
 
