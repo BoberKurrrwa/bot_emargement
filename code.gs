@@ -639,14 +639,16 @@ function sendNtfyNotification(message, topic) {
 function weeklySummary(){
   const data = uairaile;
   const week = getEventsWeekFromJson(data);
-  if (week == 0) {
-    return;
-  }
+
   let eventsSemaine = week.filter(s => {
     const summaryOk = !ignoredCourses.some(word => s.summary.includes(word));
     return summaryOk;
     });
-  // Grouper par nom et calculer la durée totale
+
+  if (eventsSemaine == 0) {
+    return;
+  }
+// Grouper par nom et calculer la durée totale
   const summaryMap = {};
 
   eventsSemaine.forEach(ev => {
