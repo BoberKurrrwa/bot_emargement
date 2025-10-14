@@ -696,6 +696,18 @@ function formatTime(date) {
   return ("0" + date.getHours()).slice(-2) + ":" + ("0" + date.getMinutes()).slice(-2);
 }
 
+function weekweek(){
+  const data = uairaile;
+  const week = getEventsWeekFromJson(data);
+
+  let eventsSemaine = week.filter(s => {
+    const summaryOk = !ignoredCourses.some(word => s.summary.includes(word));
+    return summaryOk;
+    });
+
+  return eventsSemaine;
+}
+
 var skip = false;
 
 function scheduleDailyNotifications() {
@@ -753,9 +765,13 @@ function scheduleDailyNotifications() {
   });
 
   if (slotsToday == 0) {
-    if (ntfjour === true) {
-      sendNtfyNotification("Eh beh mon salaud, t'en as de la chance, t'as pas cours aujourd'hui !!!", topic);
-  }} else {
+    var semaine = weekweek();
+    if (semaine !== 0){ 
+      if (ntfjour === true) {
+        sendNtfyNotification("Eh beh mon salaud, t'en as de la chance, t'as pas cours aujourd'hui !!!", topic);
+      }
+    }
+  } else {
     let eventsajd = events.filter(s => {
     const summaryOk = !ignoredCourses.some(word => s.summary.includes(word));
     return summaryOk;
