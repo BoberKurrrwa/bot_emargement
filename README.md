@@ -4,7 +4,7 @@ Bienvenue sur mon bot qui vous permettra de recevoir des notifications (voire é
 Le point fort de ce projet ? Aucunement besoin de louer un serveur pour héberger un script, vous avez simplement besoin d'avoir un compte Google !
 
 > [!CAUTION]
-> Il est strictement interdit d'émarger alors que vous n'êtes pas présent en cours, pensez à annuler l'émargement auto en passant la variable _emarger_ à *false* si vous n'êtes pas présent que vous laissez le bot en émargement auto.
+> Il est strictement interdit d'émarger alors que vous n'êtes pas présent en cours, pensez à annuler l'émargement auto en passant la variable _emarger_ à *false* si vous n'êtes pas présent et que vous laissez le bot en émargement auto.
 
 ## 📋 Guide d'utilisation
 
