@@ -500,7 +500,8 @@ function emargement(){
 
 
 function randomize(){
-  let laps1 = Math.floor(Math.random() * 60000);
+  let laps1 = Math.floor(Math.random() * 60000);      
+  Logger.log("Attente de : "+laps1);
   Utilities.sleep(laps1);
 }
 
@@ -517,10 +518,10 @@ function attenteEmargement() {
           var lien=emargement();
           if (ntfemarger === true){
             if (lien === null){
-              sendNtfyNotification("Vous avez déjà émargé !", topic2);
+              sendNtfyNotification("Vous avez déjà émargé !", topic);
             }
             else {
-            sendNtfyNotification("🤖 Je viens d'émarger pour vous à "+ timetime() +" pour votre cours de :\n\n"+ s.summary +"\n\nde " + formatTime(s.slotStart) + " à " + formatTime(s.slotEnd)+" !", topic2);
+            sendNtfyNotification("🤖 Je viens d'émarger pour vous à "+ timetime() +" pour votre cours de :\n\n"+ s.summary +"\n\nde " + formatTime(s.slotStart) + " à " + formatTime(s.slotEnd)+" !", topic);
             }
           }
         }
@@ -531,10 +532,12 @@ function attenteEmargement() {
 
 function attente(){
   let laps1 = Math.floor(Math.random() * 960) + 1;
+  Logger.log(laps1);
   if (laps1 > 240){
     var laps = Math.floor(laps1 / 60);
     var heure = new Date();
     heure.setMinutes(heure.getMinutes()+laps);
+    Logger.log("L'émargement s'effectuera dans plus de "+laps+" minutes");
     ScriptApp.newTrigger("attenteEmargement")
     .timeBased()
     .at(heure)
@@ -542,6 +545,7 @@ function attente(){
     return true;
   }
   else{
+    Logger.log("Attente de : "+(laps1*1000));
     Utilities.sleep(laps1*1000);
     return false;
   }
@@ -736,10 +740,65 @@ function weekweek(){
   return eventsSemaine;
 }
 
+function timetime(){
+  let timestamp = new Date();
+  let hh = false;
+  let mm = false;
+  let ss = false;
+  if (timestamp.getHours()<10){
+    hh = "0"+timestamp.getHours();
+  } else {
+    hh = timestamp.getHours();
+  }
+  if (timestamp.getMinutes()<10){
+    mm = "0"+timestamp.getMinutes();
+  } else {
+    mm = timestamp.getMinutes();
+  }
+  if (timestamp.getSeconds()<10){
+    ss = "0"+timestamp.getSeconds();
+  } else {
+    ss = timestamp.getSeconds();
+  }
+  let timetime = hh + ":" + mm + ":" + ss;
+  return timetime;
+}
+
+function sendSlotNotification() {
+  const now = new Date();
+  const events = getEventsTodayFromJson(uairaile);
+  const slotsNow = getRelevantSlotsForDay(events, now);
+
+  slotsNow.forEach(s => {
+    if (Math.abs(s.slotStart.getTime() - now.getTime()) < 3600*1000) {
+      if (ntfcours === true) {
+      sendNtfyNotification("📚 C'est l'heure d’émarger pour : \n\n" + s.summary + " \n\n" + formatTime(s.slotStart) + " à " + formatTime(s.slotEnd) + " \n\n" + s.location, topic);
+      }
+      if (emarger === true){
+        if (skip === false){//permet de skip l'attente si on le lance en étant déjà en cours
+          var wait = attente();
+        }
+        if (wait === false){
+          var lien=emargement();
+          if (ntfemarger === true){
+            if (lien === null){
+              sendNtfyNotification("Vous avez déjà émargé !", topic);
+            }
+            else {
+            sendNtfyNotification("🤖 Je viens d'émarger pour vous à "+ timetime() +" pour votre cours de :\n\n"+ s.summary +"\n\nde " + formatTime(s.slotStart) + " à " + formatTime(s.slotEnd)+" !", topic);
+            }
+          }
+        }
+      }
+    }
+  });
+}
+
 var skip = false;
 
 function scheduleDailyNotifications() {
   clearOldTriggers("sendSlotNotification");
+  clearOldTriggers("attenteEmargement");
   clearOldTriggers("scheduleDailyNotifications");
   clearOldTriggers("weeklySummary");
   var demain = aujourdhui;
@@ -817,61 +876,6 @@ function scheduleDailyNotifications() {
   }
 }
 
-function timetime(){
-  let timestamp = new Date();
-  let hh = false;
-  let mm = false;
-  let ss = false;
-  if (timestamp.getHours()<10){
-    hh = "0"+timestamp.getHours();
-  } else {
-    hh = timestamp.getHours();
-  }
-  if (timestamp.getMinutes()<10){
-    mm = "0"+timestamp.getMinutes();
-  } else {
-    mm = timestamp.getMinutes();
-  }
-  if (timestamp.getSeconds()<10){
-    ss = "0"+timestamp.getSeconds();
-  } else {
-    ss = timestamp.getSeconds();
-  }
-  let timetime = hh + ":" + mm + ":" + ss;
-  return timetime;
-}
-
-
-
-function sendSlotNotification() {
-  const now = new Date();
-  const events = getEventsTodayFromJson(uairaile);
-  const slotsNow = getRelevantSlotsForDay(events, now);
-
-  slotsNow.forEach(s => {
-    if (Math.abs(s.slotStart.getTime() - now.getTime()) < 3600*1000) {
-      if (ntfcours === true) {
-      sendNtfyNotification("📚 C'est l'heure d’émarger pour : \n\n" + s.summary + " \n\n" + formatTime(s.slotStart) + " à " + formatTime(s.slotEnd) + " \n\n" + s.location, topic1);
-      }
-      if (emarger === true){
-        if (skip === false){//permet de skip l'attente si on le lance en étant déjà en cours
-          var wait = attente();
-        }
-        if (wait === false){
-          var lien=emargement();
-          if (ntfemarger === true){
-            if (lien === null){
-              sendNtfyNotification("Vous avez déjà émargé !", topic2);
-            }
-            else {
-            sendNtfyNotification("🤖 Je viens d'émarger pour vous à "+ timetime() +" pour votre cours de :\n\n"+ s.summary +"\n\nde " + formatTime(s.slotStart) + " à " + formatTime(s.slotEnd)+" !", topic2);
-            }
-          }
-        }
-      }
-    }
-  });
-}
 function affichageTemps(secondes){
   const minmin = Math.floor(secondes / 60); 
   const secsec = secondes % 60;                
