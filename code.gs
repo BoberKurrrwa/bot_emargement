@@ -8,8 +8,6 @@ var password = ""
 const ignoredCourses = ["Activités GCC", "Activités HACK2G2"];
 const topic = "";
 
-var ntfcours = false;
-var ntfemarger = false;
 var ntfweek = false;
 var ntfjour = false;
 
@@ -27,11 +25,6 @@ const slots = [
   { start: "16:30", end: "18:00" },
   { start: "18:15", end: "19:45" }
 ];
-
-if (emarger === false){
-  ntfcours = true;//parce que si vous mettez le mode notif, faut forcément que ça envoie une notif sinon pas d'intérêt
-}
-
 
 function decodeSamlParamsFromUrl(url) {
   const qIndex = url.indexOf("?");
@@ -487,9 +480,7 @@ function withRetry(fn, maxRetries, delayMs) {
       Utilities.sleep(delayMs);
     }
   }
-  if (ntfemarger = true){
-    sendNtfyNotification("Une erreur est survenue lors  de l'émargement, veuillez émarger manuellement", topic);
-  }
+  sendNtfyNotification("Une erreur est survenue lors  de l'émargement, veuillez émarger manuellement", topic);
   throw new Error("Échec après " + maxRetries + " tentatives : " + lastError);
 }
 
@@ -516,13 +507,11 @@ function attenteEmargement() {
         if (skip === false){//permet de skip l'attente si on le lance en étant déjà en cours
           randomize();
           var lien=emargement();
-          if (ntfemarger === true){
-            if (lien === null){
-              sendNtfyNotification("Vous avez déjà émargé !", topic);
-            }
-            else {
-            sendNtfyNotification("🤖 Je viens d'émarger pour vous à "+ timetime() +" pour votre cours de :\n\n"+ s.summary +"\n\nde " + formatTime(s.slotStart) + " à " + formatTime(s.slotEnd)+" !", topic);
-            }
+          if (lien === null){
+            sendNtfyNotification("Vous avez déjà émargé !", topic);
+          }
+          else {
+          sendNtfyNotification("🤖 Je viens d'émarger pour vous à "+ timetime() +" pour votre cours de :\n\n"+ s.summary +"\n\nde " + formatTime(s.slotStart) + " à " + formatTime(s.slotEnd)+" !", topic);
           }
         }
       }
@@ -771,7 +760,7 @@ function sendSlotNotification() {
 
   slotsNow.forEach(s => {
     if (Math.abs(s.slotStart.getTime() - now.getTime()) < 3600*1000) {
-      if (ntfcours === true) {
+      if (emarger === false) {
       sendNtfyNotification("📚 C'est l'heure d’émarger pour : \n\n" + s.summary + " \n\n" + formatTime(s.slotStart) + " à " + formatTime(s.slotEnd) + " \n\n" + s.location, topic);
       }
       if (emarger === true){
@@ -780,13 +769,11 @@ function sendSlotNotification() {
         }
         if (wait === false){
           var lien=emargement();
-          if (ntfemarger === true){
-            if (lien === null){
-              sendNtfyNotification("Vous avez déjà émargé !", topic);
-            }
-            else {
+          if (lien === null){
+            sendNtfyNotification("Vous avez déjà émargé !", topic);
+          }
+          else {
             sendNtfyNotification("🤖 Je viens d'émarger pour vous à "+ timetime() +" pour votre cours de :\n\n"+ s.summary +"\n\nde " + formatTime(s.slotStart) + " à " + formatTime(s.slotEnd)+" !", topic);
-            }
           }
         }
       }
@@ -836,7 +823,7 @@ function scheduleDailyNotifications() {
 
   if (s.slotStart <= now && s.slotEnd > now) {
     Logger.log("On est déjà dans ce créneau → " + formatTime(s.slotStart)+"-" + formatTime(s.slotEnd));
-    if (ntfcours === true) {
+    if (emarger === false) {
       sendNtfyNotification("⚠️ Cours en cours : \n\n" + s.summary + ", \n" + s.location, topic);
     }
     skip=true;
