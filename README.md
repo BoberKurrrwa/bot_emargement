@@ -29,7 +29,6 @@ Ensuite, les informations vous concernants :
 - `topic` utilisé pour envoyer les notifs relatives au cours
 
 Enfin, les variables concernant les notificaitons :
-- `ntftemps` Si true -> notif pour savoir le temps avant que l'on émarge automatiquement
 - `ntfcours` Si true -> notif pour rappeler d'émarger au cours
 - `ntfemarger` Si true -> notif pour dire que le bot à émarger (si t'émarges avec le bot et que tu mets ça à false t'es un malade mental sache le)
 - `ntfweek` Si true -> notif début de semaine pour résumé de la semaine 
