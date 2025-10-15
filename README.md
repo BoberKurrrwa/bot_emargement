@@ -29,10 +29,8 @@ Ensuite, les informations vous concernants :
 - `topic` utilisé pour envoyer les notifs relatives au cours
 
 Enfin, les variables concernant les notificaitons :
-- `ntfcours` Si true -> notif pour rappeler d'émarger au cours
-- `ntfemarger` Si true -> notif pour dire que le bot à émarger (si t'émarges avec le bot et que tu mets ça à false t'es un malade mental sache le)
-- `ntfweek` Si true -> notif début de semaine pour résumé de la semaine 
-- `ntfjour` Si true -> notif à 7h30 pour résumé de la journée
+- `ntfweek` Si true -> notif en début de semaine pour avoir un résumé de la semaine 
+- `ntfjour` Si true -> notif à 7h30 tous les jours pour avoir le planning de ta journée
 
 ### 3. Exécuter la fonction _scheduleDailyNotifications_ et autoriser les accès à votre script :
 
