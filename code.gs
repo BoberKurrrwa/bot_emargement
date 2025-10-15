@@ -511,7 +511,7 @@ function attenteEmargement() {
   const slotsNow = getRelevantSlotsForDay(events, now);
 
   slotsNow.forEach(s => {
-    if (Math.abs(s.slotStart.getTime() - now.getTime()) < 2700*1000) {
+    if (Math.abs(s.slotStart.getTime() - now.getTime()) < 3600*1000) {
       if (emarger === true){
         if (skip === false){//permet de skip l'attente si on le lance en étant déjà en cours
           randomize();
