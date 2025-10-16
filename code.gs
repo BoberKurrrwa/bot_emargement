@@ -522,7 +522,7 @@ function attenteEmargement() {
 function attente(){
   let laps1 = Math.floor(Math.random() * 960) + 1;
   Logger.log(laps1);
-  if (laps1 > 240){
+  if (laps1 > 119){
     var laps = Math.floor(laps1 / 60);
     var heure = new Date();
     heure.setMinutes(heure.getMinutes()+laps);
