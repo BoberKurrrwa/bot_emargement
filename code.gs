@@ -492,7 +492,7 @@ function emargement(){
 
 function randomize(){
   let laps1 = Math.floor(Math.random() * 60000);      
-  Logger.log("Attente de : "+laps1);
+  Logger.log("Attente de : "+(laps1/1000));
   Utilities.sleep(laps1);
 }
 
