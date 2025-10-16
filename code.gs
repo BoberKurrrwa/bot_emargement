@@ -534,12 +534,23 @@ function attente(){
     return true;
   }
   else{
-    Logger.log("Attente de : "+(laps1*1000));
-    Utilities.sleep(laps1*1000);
-    return false;
+    if (laps1 > 59){
+      var heure = new Date();
+      heure.setMinutes(heure.getMinutes()+2);
+      Logger.log("L'émargement s'effectuera dans plus de 2 minutes");
+      ScriptApp.newTrigger("attenteEmargement")
+      .timeBased()
+      .at(heure)
+      .create();
+      return true;
+    }
+    else {
+      Logger.log("Attente de : "+(laps1));
+      Utilities.sleep(laps1*1000);
+      return false;
+    }
   }
 }
-
 
 function planning(semestre){
   var url = "https://planningsup.app/api/v1/calendars?p=ensibs." + FORMATION + "." + A + "emeannee.semestre" + semestre + "s" + semestre + ".tp" + TP;
