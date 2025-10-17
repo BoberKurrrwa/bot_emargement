@@ -511,7 +511,7 @@ function attenteEmargement() {
             sendNtfyNotification("Vous avez déjà émargé !", topic);
           }
           else {
-          sendNtfyNotification("🤖 Je viens d'émarger pour vous à "+ timetime() +" pour votre cours de :\n\n"+ s.summary +"\n\nde " + formatTime(s.slotStart) + " à " + formatTime(s.slotEnd)+" !", topic);
+            sendNtfyNotification("🤖 Je viens d'émarger pour vous à "+ timetime() +" pour votre cours de :\n\n"+ s.summary +"\n\nde " + formatTime(s.slotStart) + " à " + formatTime(s.slotEnd)+" !", topic);
           }
         }
       }
