@@ -520,36 +520,54 @@ function attenteEmargement() {
 }
 
 function attente(){
-  let laps1 = Math.floor(Math.random() * 960) + 1;
-  Logger.log(laps1);
-  if (laps1 > 119){
-    var laps = Math.floor(laps1 / 60);
+  var aleatoire=Math.random()*100;
+  Logger.log("Proba = "+aleatoire);
+  if (aleatoire>90){
+    let laps1 = Math.floor(Math.random() * 960) + 1;
+    let laps2 = 960;
+    let laps3 = laps1 + laps2;
+    var laps = Math.floor(laps3/60);
     var heure = new Date();
     heure.setMinutes(heure.getMinutes()+laps);
     Logger.log("L'émargement s'effectuera dans plus de "+laps+" minutes");
     ScriptApp.newTrigger("attenteEmargement")
-    .timeBased()
+    .timeBased
     .at(heure)
     .create();
     return true;
-  }
-  else{
-    if (laps1 > 59){
+  } 
+  else {
+    let laps1 = Math.floor(Math.random() * 960) + 1;
+    Logger.log(laps1);
+    if (laps1 > 119){
+      var laps = Math.floor(laps1 / 60);
       var heure = new Date();
-      heure.setMinutes(heure.getMinutes()+2);
-      Logger.log("L'émargement s'effectuera dans plus de 2 minutes");
+      heure.setMinutes(heure.getMinutes()+laps);
+      Logger.log("L'émargement s'effectuera dans plus de "+laps+" minutes");
       ScriptApp.newTrigger("attenteEmargement")
       .timeBased()
       .at(heure)
       .create();
       return true;
     }
-    else {
-      Logger.log("Attente de : "+(laps1));
-      Utilities.sleep(laps1*1000);
-      return false;
+    else{
+      if (laps1 > 59){
+        var heure = new Date();
+        heure.setMinutes(heure.getMinutes()+2);
+        Logger.log("L'émargement s'effectuera dans plus de 2 minutes");
+        ScriptApp.newTrigger("attenteEmargement")
+        .timeBased()
+        .at(heure)
+        .create();
+        return true;
+      }
+      else {
+        Logger.log("Attente de : "+(laps1));
+        Utilities.sleep(laps1*1000);
+        return false;
+      }
     }
-  }
+  } 
 }
 
 function planning(semestre){
