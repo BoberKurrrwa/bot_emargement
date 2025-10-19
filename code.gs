@@ -449,7 +449,7 @@ function testLogin() {
       });
   link = res13.getContentText()
   link = extractAttendanceLink(link);
-
+  Logger.log("link : " + link);
   if (link === null){
     return link;
   }
@@ -462,30 +462,22 @@ function testLogin() {
         followRedirects: false,
         muteHttpExceptions: true
       });
-  /*Logger.log(res14.getResponseCode());
-  Logger.log("émargement GET Headers: " + JSON.stringify(res14.getAllHeaders(), null, 2));
-  Logger.log("émargement GET : \n" + res14);
-  redirect = res14.getAllHeaders()["Location"];
-  Logger.log("Redirection vers : " + redirect);*/
 }
 
-function withRetry(fn, maxRetries, delayMs) {
-  let lastError;
-  for (let i = 0; i < maxRetries; i++) {
+function withRetry(fn, delayMs) {
+  while (true) {
     try {
-      return lien=fn(); // si ça marche → on retourne le résultat direct
+      let result = fn(); // essaie d’exécuter ta fonction
+      return result; // si ça marche, on sort
     } catch (e) {
-      lastError = e;
-      Logger.log("Tentative " + (i+1) + " échouée : " + e.message);
-      Utilities.sleep(delayMs);
+      Logger.log("Erreur détectée : " + e.message);
+      Utilities.sleep(delayMs); // on attend avant de recommencer
     }
   }
-  sendNtfyNotification("Une erreur est survenue lors  de l'émargement, veuillez émarger manuellement", topic);
-  throw new Error("Échec après " + maxRetries + " tentatives : " + lastError);
 }
 
-function emargement(){
-  var lien = withRetry(testLogin, 15, 10);
+function emargement() {
+  var lien = withRetry(testLogin, 2500);
   return lien;
 }
 
