@@ -674,10 +674,39 @@ function sendNtfyNotification(message, topic) {
   const options = {
     method: "post",
     payload: message,
+    muteHttpExceptions: true,
   };
-  UrlFetchApp.fetch(url, options);
-}
 
+  let attempt = 0;
+  const maxAttempts = 10;
+  const baseDelay = 15000; // 15 secondes d’attente entre les essais
+
+  while (true) {
+    attempt++;
+    try {
+      const response = UrlFetchApp.fetch(url, options);
+      const code = response.getResponseCode();
+
+      if (code >= 200 && code < 300) {
+        Logger.log("✅ Notification envoyée avec succès (tentative " + attempt + ")");
+        return; // succès → on sort
+      } else if (code === 429) {
+        Logger.log("⚠️ Code 429 reçu, attente avant nouvelle tentative...");
+      } else {
+        Logger.log("❌ Erreur HTTP " + code + " : " + response.getContentText());
+      }
+    } catch (e) {
+      Logger.log("⚠️ Erreur réseau : " + e.message);
+    }
+
+    // Vérifie la limite max d’essais
+    if (attempt >= maxAttempts) {
+      Logger.log("🚨 Abandon après " + maxAttempts + " tentatives d’envoi de notification.");
+      return;
+    }
+    Utilities.sleep(baseDelay);
+  }
+}
 function weeklySummary(){
   const data = uairaile;
   const week = getEventsWeekFromJson(data);
