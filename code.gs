@@ -890,7 +890,7 @@ function scheduleDailyNotifications() {
 
   if (slotsToday == 0) {
     var semaine = weekweek();
-    if (semaine !== 0){ 
+    if (semaine != 0){ 
       if (ntfjour === true) {
         sendNtfyNotification("Eh beh mon salaud, t'en as de la chance, t'as pas cours aujourd'hui !!!", topic);
       }
