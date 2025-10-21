@@ -707,58 +707,147 @@ function sendNtfyNotification(message, topic) {
     Utilities.sleep(baseDelay);
   }
 }
-function weeklySummary(){
-  const data = uairaile;
-  const week = getEventsWeekFromJson(data);
 
-  let eventsSemaine = week.filter(s => {
-    const summaryOk = !ignoredCourses.some(word => s.summary.includes(word));
-    return summaryOk;
+function PlusOrMinus(jsonData, semainesRestantes) {
+  const aujourdhui = new Date();
+  aujourdhui.setDate(aujourdhui.getDate() + (semainesRestantes * 7));
+
+  let eventsWeek = [];
+  for (let i = 0; i < 5; i++) {
+    const currentDay = new Date(aujourdhui);
+    currentDay.setDate(currentDay.getDate() + i);
+
+    jsonData.forEach(ev => {
+      const start = new Date(ev.start);
+      const end = new Date(ev.end);
+      if (start.toDateString() === currentDay.toDateString()) {
+        eventsWeek.push({
+          summary: ev.name,
+          start,
+          end,
+          location: ev.location || ""
+        });
+      }
     });
-
-  if (eventsSemaine == 0) {
-    return;
   }
-// Grouper par nom et calculer la durée totale
-  const summaryMap = {};
+  return eventsWeek;
+}
 
-  eventsSemaine.forEach(ev => {
-    const durationMs = ev.end - ev.start; // durée en millisecondes
-    const durationHours = durationMs / (1000 * 60 * 60);
-    if (!summaryMap[ev.summary]) {
-      summaryMap[ev.summary] = { hours: 0 };
+function calculateWeeks(choix) {
+  var jsonData=uairaile;
+  let semainesRestantes = 0;
+  let foundEvents = false;
+  while (!foundEvents) {
+    if (choix == "UntilApprenticeship"){
+      semainesRestantes++;
+      let eventsWeek = PlusOrMinus(jsonData, semainesRestantes);
+      if (eventsWeek.length == 0) {
+        foundEvents = true;
+      }
     }
-    summaryMap[ev.summary].hours += durationHours;
-  });
-  // Transformer en tableau pour trier
-  let resultArray = Object.entries(summaryMap).map(([summary, data]) => ({
-    summary,
-    hours: data.hours
-  }));
-  // Fonction pour attribuer une priorité CM → TD → TP
-  function getPriority(summary) {
-    if (summary.startsWith("[CM")) return 1;
-    if (summary.startsWith("[TD")) return 2;
-    if (summary.startsWith("[TP")) return 3;
-    return 4; // si autre chose
+    if (choix == "SinceApprenticeship"){
+      semainesRestantes--;
+      let eventsWeek = PlusOrMinus(jsonData, semainesRestantes);
+      if (eventsWeek.length == 0) {
+        foundEvents = true;
+      }
+    }
+    if (choix == "UntilSchool"){
+      semainesRestantes++;
+      let eventsWeek = PlusOrMinus(jsonData, semainesRestantes);
+      if (eventsWeek.length > 0) {
+        foundEvents = true;
+      }
+    }
+    if (choix == "SinceSchool"){
+      semainesRestantes--;
+      let eventsWeek = PlusOrMinus(jsonData, semainesRestantes);
+      if (eventsWeek.length > 0) {
+        foundEvents = true;
+      }
+    }
   }
-  // Trier : priorité CM/TD/TP puis par ordre alphabétique
-  resultArray.sort((a, b) => {
-    const prioDiff = getPriority(a.summary) - getPriority(b.summary);
-    if (prioDiff !== 0) return prioDiff;
-    return a.summary.localeCompare(b.summary);
-  });
-  let resume = "📅 Résumé de la semaine :\n\n";
-    resultArray.forEach(ev => {
-    const totalHours = ev.hours.toFixed(1);
-    resume += `${ev.summary} → ${formatSummary(totalHours)}\n`;
-  });
-  let totalHoursWeek = 0;
-  eventsSemaine.forEach(ev => {
-  totalHoursWeek += (ev.end - ev.start) / (1000 * 60 * 60);
-  });
-  resume += `\n\n🕒 Total semaine : ${formatSummary(totalHoursWeek)}`;
+  return semainesRestantes;
+}
+
+function nombreSemaine(){
+  if (weekweek() == 0){
+    var after = calculateWeeks("UntilSchool");
+    var before = calculateWeeks("SinceSchool");
+    var total = after-before-1;
+    var texteSemaine = "Début de la semaine " + (-before) + " sur " + total + " en entreprise";
+    if (after == 1){
+      texteSemaine += "\nRetour à l'école semaine prochaine (Yaouh)";
+    }
+    return texteSemaine
+  }
+  else{
+    var after = calculateWeeks("UntilApprenticeship");
+    var before = calculateWeeks("SinceApprenticeship");
+    var total = after-before-1;
+    var texteSemaine = "Début de la semaine " + (-before) + " sur " + total + " en école"
+    if (after == 1){
+      texteSemaine += "\nRetour en entreprise semaine prochaine !";
+    }
+    return texteSemaine;
+  }
+}
+
+function weeklySummary(){
   if (ntfweek === true) {
+    const data = uairaile;
+    const week = getEventsWeekFromJson(data);
+  
+    let eventsSemaine = week.filter(s => {
+      const summaryOk = !ignoredCourses.some(word => s.summary.includes(word));
+      return summaryOk;
+      });
+  
+    if (eventsSemaine == 0) {
+      return;
+    }
+  // Grouper par nom et calculer la durée totale
+    const summaryMap = {};
+  
+    eventsSemaine.forEach(ev => {
+      const durationMs = ev.end - ev.start; // durée en millisecondes
+      const durationHours = durationMs / (1000 * 60 * 60);
+      if (!summaryMap[ev.summary]) {
+        summaryMap[ev.summary] = { hours: 0 };
+      }
+      summaryMap[ev.summary].hours += durationHours;
+    });
+    // Transformer en tableau pour trier
+    let resultArray = Object.entries(summaryMap).map(([summary, data]) => ({
+      summary,
+      hours: data.hours
+    }));
+    // Fonction pour attribuer une priorité CM → TD → TP
+    function getPriority(summary) {
+      if (summary.startsWith("[CM")) return 1;
+      if (summary.startsWith("[TD")) return 2;
+      if (summary.startsWith("[TP")) return 3;
+      return 4; // si autre chose
+    }
+    // Trier : priorité CM/TD/TP puis par ordre alphabétique
+    resultArray.sort((a, b) => {
+      const prioDiff = getPriority(a.summary) - getPriority(b.summary);
+      if (prioDiff !== 0) return prioDiff;
+      return a.summary.localeCompare(b.summary);
+    });
+    let resume = nombreSemaine();
+    if (eventsSemaine != 0) {
+      resume += "\n\n📅 Résumé de la semaine :\n\n";
+      resultArray.forEach(ev => {
+      const totalHours = ev.hours.toFixed(1);
+      resume += `${ev.summary} → ${formatSummary(totalHours)}\n`;
+      });
+      let totalHoursWeek = 0;
+      eventsSemaine.forEach(ev => {
+      totalHoursWeek += (ev.end - ev.start) / (1000 * 60 * 60);
+      });
+      resume += `\n\n🕒 Total semaine : ${formatSummary(totalHoursWeek)}`;
+    }
     sendNtfyNotification(resume, topic);
   }
 }
@@ -889,10 +978,9 @@ function scheduleDailyNotifications() {
   });
 
   if (slotsToday == 0) {
-    var semaine = weekweek();
-    if (semaine != 0){ 
+    if (weekweek() != 0){ 
       if (ntfjour === true) {
-        sendNtfyNotification("Eh beh mon salaud, t'en as de la chance, t'as pas cours aujourd'hui !!!", topic);
+        sendNtfyNotification("Eh beh jeune personne très respectable, tu n'as pas cours aujourd'hui !!!", topic);
       }
     }
   } else {
