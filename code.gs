@@ -25,6 +25,7 @@ const slots = [
   { start: "16:30", end: "18:00" },
   { start: "18:15", end: "19:45" }
 ];
+var skip = false;
 
 function decodeSamlParamsFromUrl(url) {
   const qIndex = url.indexOf("?");
@@ -919,8 +920,6 @@ function sendSlotNotification() {
     }
   });
 }
-
-var skip = false;
 
 function scheduleDailyNotifications() {
   clearOldTriggers("sendSlotNotification");
