@@ -482,6 +482,44 @@ function emargement() {
   return lien;
 }
 
+function sendNtfyNotification(message, topic) {
+  const url = "https://ntfy.sh/" + topic;
+  const options = {
+    method: "post",
+    payload: message,
+    muteHttpExceptions: true,
+  };
+
+  let attempt = 0;
+  const maxAttempts = 10;
+  const baseDelay = 15000; // 15 secondes d’attente entre les essais
+
+  while (true) {
+    attempt++;
+    try {
+      const response = UrlFetchApp.fetch(url, options);
+      const code = response.getResponseCode();
+
+      if (code >= 200 && code < 300) {
+        Logger.log("✅ Notification envoyée avec succès (tentative " + attempt + ")");
+        return; // succès → on sort
+      } else if (code === 429) {
+        Logger.log("⚠️ Code 429 reçu, attente avant nouvelle tentative...");
+      } else {
+        Logger.log("❌ Erreur HTTP " + code + " : " + response.getContentText());
+      }
+    } catch (e) {
+      Logger.log("⚠️ Erreur réseau : " + e.message);
+    }
+
+    // Vérifie la limite max d’essais
+    if (attempt >= maxAttempts) {
+      Logger.log("🚨 Abandon après " + maxAttempts + " tentatives d’envoi de notification.");
+      return;
+    }
+    Utilities.sleep(baseDelay);
+  }
+}
 
 function randomize(){
   let laps1 = Math.floor(Math.random() * 60000);      
@@ -496,16 +534,14 @@ function attenteEmargement() {
 
   slotsNow.forEach(s => {
     if (Math.abs(s.slotStart.getTime() - now.getTime()) < 3600*1000) {
-      if (emarger === true){
-        if (skip === false){//permet de skip l'attente si on le lance en étant déjà en cours
-          randomize();
-          var lien=emargement();
-          if (lien === null){
-            sendNtfyNotification("Vous avez déjà émargé !", topic);
-          }
-          else {
-            sendNtfyNotification("🤖 Je viens d'émarger pour vous à "+ timetime() +" pour votre cours de :\n\n"+ s.summary +"\n\nde " + formatTime(s.slotStart) + " à " + formatTime(s.slotEnd)+" !", topic);
-          }
+      if (skip === false){//permet de skip l'attente si on le lance en étant déjà en cours
+        randomize();
+        var lien=emargement();
+        if (lien === null){
+          sendNtfyNotification("Vous avez déjà émargé !", topic);
+        }
+        else {
+          sendNtfyNotification("🤖 Je viens d'émarger pour vous à "+ timetime() +" pour votre cours de :\n\n"+ s.summary +"\n\nde " + formatTime(s.slotStart) + " à " + formatTime(s.slotEnd)+" !", topic);
         }
       }
     }
@@ -670,45 +706,6 @@ function clearOldTriggers(triggered) {
   }
 }
 
-function sendNtfyNotification(message, topic) {
-  const url = "https://ntfy.sh/" + topic;
-  const options = {
-    method: "post",
-    payload: message,
-    muteHttpExceptions: true,
-  };
-
-  let attempt = 0;
-  const maxAttempts = 10;
-  const baseDelay = 15000; // 15 secondes d’attente entre les essais
-
-  while (true) {
-    attempt++;
-    try {
-      const response = UrlFetchApp.fetch(url, options);
-      const code = response.getResponseCode();
-
-      if (code >= 200 && code < 300) {
-        Logger.log("✅ Notification envoyée avec succès (tentative " + attempt + ")");
-        return; // succès → on sort
-      } else if (code === 429) {
-        Logger.log("⚠️ Code 429 reçu, attente avant nouvelle tentative...");
-      } else {
-        Logger.log("❌ Erreur HTTP " + code + " : " + response.getContentText());
-      }
-    } catch (e) {
-      Logger.log("⚠️ Erreur réseau : " + e.message);
-    }
-
-    // Vérifie la limite max d’essais
-    if (attempt >= maxAttempts) {
-      Logger.log("🚨 Abandon après " + maxAttempts + " tentatives d’envoi de notification.");
-      return;
-    }
-    Utilities.sleep(baseDelay);
-  }
-}
-
 function PlusOrMinus(jsonData, semainesRestantes) {
   const aujourdhui = new Date();
   aujourdhui.setDate(aujourdhui.getDate() + (semainesRestantes * 7));
@@ -782,7 +779,7 @@ function nombreSemaine(){
     }
     return texteSemaine
   }
-  else{
+  else {
     var after = calculateWeeks("UntilApprenticeship");
     var before = calculateWeeks("SinceApprenticeship");
     var total = after-before-1;
