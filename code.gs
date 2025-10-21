@@ -439,6 +439,7 @@ function testLogin() {
 
   let link = res12.getContentText()
   link = extractPresenceLink(link);
+  Logger.log("Lien page émargement : " + link);
 
   let res13 = UrlFetchApp.fetch(link+"&view=1", {
         method: "get",
