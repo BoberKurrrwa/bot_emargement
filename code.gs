@@ -466,8 +466,11 @@ function testLogin() {
 }
 
 function withRetry(fn, delayMs) {
+  var nbEssais = 0;
   while (true) {
+    nbEssais++;
     try {
+      Logger.log("Essaie numéro " + nbEssais);
       let result = fn(); // essaie d’exécuter ta fonction
       return result; // si ça marche, on sort
     } catch (e) {
