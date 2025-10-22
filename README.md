@@ -47,9 +47,9 @@ Normalement vous pourrez voir dans l'onglet "Déclencheurs" sur le côté gauche
 
 <img width="1737" height="493" alt="image" src="https://github.com/user-attachments/assets/9b6e4d2e-63d3-4850-93f0-8d8000207db1" />
 
-Vous pouvez voir toutes les fonctions qui vont se déclencher à des moments précis dnas la journée. Si vous voyez des déclencheurs étant "Désactivé" c'est qu'ils ont déjà été activé, et vous pouvez voir sur la droite le taux d'échec de l'exécution de la fonction.
+Vous pouvez voir toutes les fonctions qui vont se déclencher à des moments précis dans la journée. Si vous lancez pour la première fois le programme après votre dernier cours de la journée, c'est tout à faire normal si seulement un seul déclencheur (_scheduleDailyNotifications_) est présent. Si vous voyez des déclencheurs étant "Désactivé" c'est qu'ils ont déjà été activé, et vous pouvez voir sur la droite le taux d'échec de l'exécution de la fonction (si il est à 100%, c'est qu'il y a eu une erreur dans l'exécution de la fonction, et vous pourrez déterminer ce qui cloche en vous rendant dans l'onglet dont je parle jsute après).
 
-Vous pourrez également voir sur la gauche l'onglet "Exécutions", où vous pouvez observer chaque fonction qui a été exécutée et le résultat de chacune :
+Vous pourrez également voir sur la gauche l'onglet "Exécutions", où vous pouvez observer chaque fonction qui a été exécutée et le résultat de chacune (et donc s'il y a une erreur, vous pourrez déterminer ce qui a cloché et me faire un retour potentiellement) :
 
 <img width="1652" height="311" alt="image" src="https://github.com/user-attachments/assets/54578721-1c66-4cc5-a048-64cacd9a08bb" />
 
