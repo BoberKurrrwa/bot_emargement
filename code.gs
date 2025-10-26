@@ -838,9 +838,22 @@ function ExtractICS() {
 }
 
 
+function appelUrl(url){
+  let lastError;
+  for (let i = 0; i < 3; i++) {
+    try {
+      return response = UrlFetchApp.fetch(url);  
+    } catch (e) {
+      lastError = e;
+      Logger.log("Tentative " + (i+1) + " échouée : " + e.message);
+      Utilities.sleep(200);
+    }
+  }
+}
+
 function planning(semestre){
   var url = "https://planningsup.app/api/v1/calendars?p=ensibs." + FORMATION + "." + A + "emeannee.semestre" + semestre + "s" + semestre + ".tp" + TP;
-  var response = UrlFetchApp.fetch(url);
+  var response = appelUrl(url);
   var json = JSON.parse(response.getContentText());
   return json
 }
