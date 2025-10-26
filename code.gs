@@ -627,7 +627,6 @@ function attente(){
   } 
 }
 
-
 function parseICalDate(str) {
   // Exemple de format : 20251026T130000Z
   const match = str.match(/(\d{4})(\d{2})(\d{2})T(\d{2})(\d{2})(\d{2})Z?/);
