@@ -839,6 +839,10 @@ function url() {
   var events2 = (b && Array.isArray(b.plannings) && b.plannings[0] && Array.isArray(b.plannings[0].events))
                 ? b.plannings[0].events : [];
   var eventsConcat = events1.concat(events2);
+  eventsConcat = eventsConcat.filter(s => {
+  const summaryOk = !ignoredCourses.some(word => s.name.includes(word));
+  return summaryOk;
+  });
   return eventsConcat;
 }
 
@@ -1000,7 +1004,7 @@ function calculateWeeks(choix) {
 }
 
 function nombreSemaine(){
-  if (weekweek() == 0){
+  if (getEventsWeekFromJson(laData()) == 0){
     var after = calculateWeeks("UntilSchool");
     var before = calculateWeeks("SinceSchool");
     var total = after-before-1;
@@ -1025,12 +1029,7 @@ function nombreSemaine(){
 function weeklySummary(){
   if (ntfweek === true) {
     const data = laData();
-    const week = getEventsWeekFromJson(data);
-  
-    let eventsSemaine = week.filter(s => {
-      const summaryOk = !ignoredCourses.some(word => s.summary.includes(word));
-      return summaryOk;
-      });
+    let eventsSemaine = getEventsWeekFromJson(data);
   
     if (eventsSemaine == 0) {
       return;
@@ -1085,17 +1084,6 @@ function formatTime(date) {
   return ("0" + date.getHours()).slice(-2) + ":" + ("0" + date.getMinutes()).slice(-2);
 }
 
-function weekweek(){
-  const data = laData();
-  const week = getEventsWeekFromJson(data);
-
-  let eventsSemaine = week.filter(s => {
-    const summaryOk = !ignoredCourses.some(word => s.summary.includes(word));
-    return summaryOk;
-    });
-
-  return eventsSemaine;
-}
 
 function timetime(){
   let timestamp = new Date();
@@ -1174,13 +1162,9 @@ function scheduleDailyNotifications() {
     return;
   }
   const aujo = new Date();
-  const data = laData();
-  const events = getEventsTodayFromJson(data);
+  const events = getEventsTodayFromJson(laData());
   let slotsToday = getRelevantSlotsForDay(events, aujo);
-  slotsToday = slotsToday.filter(s => {
-    const summaryOk = !ignoredCourses.some(word => s.summary.includes(word));
-    return summaryOk;
-  });
+
   slotsToday.forEach(s => {
     const now = new Date();
     if (s.slotEnd <= now) {
@@ -1206,22 +1190,18 @@ function scheduleDailyNotifications() {
   });
 
   if (slotsToday == 0) {
-    if (weekweek() != 0){ 
+    if (getEventsWeekFromJson(laData()) != 0){ 
       if (ntfjour === true) {
         sendNtfyNotification("Eh beh jeune personne très respectable, tu n'as pas cours aujourd'hui !!!", topic);
       }
     }
   } else {
-    let eventsajd = events.filter(s => {
-    const summaryOk = !ignoredCourses.some(word => s.summary.includes(word));
-    return summaryOk;
-    });
-    eventsajd.sort((a, b) => a.start - b.start);
+    events.sort((a, b) => a.start - b.start);
     let totalHoursDay = 0;
-    eventsajd.forEach(ev => {
+    events.forEach(ev => {
     totalHoursDay += (ev.end - ev.start) / (1000 * 60 * 60);
     });   
-    const ajd = eventsajd.map(ev =>
+    const ajd = events.map(ev =>
       formatTime(ev.start) + "-" + formatTime(ev.end) + " : " + ev.summary + ", " + ev.location +"\n").join("\n");
     if (ntfjour === true) {
       sendNtfyNotification("📅 Planning du jour :\n\n" + ajd + "\n\n🕒 Total : " + formatSummary(totalHoursDay)+"\n", topic);
