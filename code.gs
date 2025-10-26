@@ -849,8 +849,8 @@ function weeklySummary(){
       totalHoursWeek += (ev.end - ev.start) / (1000 * 60 * 60);
       });
       resume += `\n\n🕒 Total semaine : ${formatSummary(totalHoursWeek)}`;
+      sendNtfyNotification(resume, topic);
     }
-    sendNtfyNotification(resume, topic);
   }
 }
 
