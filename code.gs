@@ -837,8 +837,9 @@ function weeklySummary(){
       if (prioDiff !== 0) return prioDiff;
       return a.summary.localeCompare(b.summary);
     });
+    let resume = "";
     if (eventsSemaine != 0) {
-      let resume = "📅 Résumé de la semaine :\n\n";
+      resume += "📅 Résumé de la semaine :\n\n";
       resultArray.forEach(ev => {
       const totalHours = ev.hours.toFixed(1);
       resume += `${ev.summary} → ${formatSummary(totalHours)}\n`;
