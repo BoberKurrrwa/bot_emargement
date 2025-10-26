@@ -533,7 +533,7 @@ function randomize(){
 
 function attenteEmargement() {
   const now = new Date();
-  const events = getEventsTodayFromJson(uairaile);
+  const events = getEventsTodayFromJson(laData());
   const slotsNow = getRelevantSlotsForDay(events, now);
 
   slotsNow.forEach(s => {
@@ -603,6 +603,203 @@ function attente(){
   } 
 }
 
+
+function parseICalDate(str) {
+  // Exemple de format : 20251026T130000Z
+  const match = str.match(/(\d{4})(\d{2})(\d{2})T(\d{2})(\d{2})(\d{2})Z?/);
+  if (!match) return null;
+  const [_, y, m, d, h, min, s] = match;
+  return new Date(Date.UTC(y, m - 1, d, h, min, s));
+}
+
+function parseICS(url) {
+  const response = UrlFetchApp.fetch(url);
+  const icsData = response.getContentText();
+  
+  const events = [];
+  const lines = icsData.split(/\r?\n/);
+  let currentEvent = null;
+  
+  for (let line of lines) {
+    line = line.trim();
+
+    if (line === 'BEGIN:VEVENT') {
+      currentEvent = {};
+    } else if (line === 'END:VEVENT') {
+      events.push(currentEvent);
+      currentEvent = null;
+    } else if (currentEvent) {
+      const [key, ...valueParts] = line.split(':');
+      const value = valueParts.join(':');
+
+      switch (true) {
+        case key.startsWith('SUMMARY'):
+          currentEvent.name = value;
+          break;
+        case key.startsWith('DTSTART'):
+          currentEvent.start = parseICalDate(value);
+          break;
+        case key.startsWith('DTEND'):
+          currentEvent.end = parseICalDate(value);
+          break;
+        case key.startsWith('LOCATION'):
+          currentEvent.location = value;
+          break;
+      }
+    }
+  }
+
+  return events;
+}
+
+
+function choixId() {
+  if (FORMATION === "cyberdefense"){
+    if (A === "3"){
+      if (TP === "1"){
+        return [85,4770];
+      }
+      if (TP === "2"){
+        return [334,4838];
+      }
+      if (TP === "3"){
+        return [3733,5256];
+      }
+      if (TP === "4"){
+        return [3851,4473];
+      }
+      if (TP === "5"){
+        return [7198,7204];
+      }
+      if (TP === "6"){
+        return [7200,7203];
+      }
+    }
+    if (A === "4"){
+      if (TP === "1"){
+        return [2860,4866];
+      }
+      if (TP === "2"){
+        return [4517,4848];
+      }
+      if (TP === "3"){
+        return [4938,4820];
+      }
+      if (TP === "4"){
+        return [4948,4821];
+      }
+      if (TP === "5"){
+        return [6024,6102];
+      }
+      if (TP === "6"){
+        return [6052,6125];
+      }
+    }
+    if (A === "5"){
+      if (TP === "1"){
+        return [4965,null];
+      }
+      if (TP === "2"){
+        return [4958,null];
+      }
+      if (TP === "3"){
+        return [2422,null];
+      }
+      if (TP === "4"){
+        return [2424,null];
+      }
+      if (TP === "5"){
+        return [4983,null];
+      }
+      if (TP === "6"){
+        return [4989,null];
+      }
+    }
+  }
+  if (FORMATION === "cyberlog"){
+    if (A === "3"){
+      if (TP === "1"){
+        return [1026,5132];
+      }
+      if (TP === "2"){
+        return [9358,9359];
+      }
+    }
+    if (A === "4"){
+      if (TP === "1"){
+        return [1771,645];
+      }
+      if (TP === "2"){
+        return [9983,9917];
+      }
+    }
+    if (A === "5"){
+      if (TP === "1"){
+        return [9994,null];
+      }
+      if (TP === "2"){
+        return [9992,null];
+      }
+    }
+  }
+  if (FORMATION === "cyberdata"){
+    if (A === "3"){
+      if (TP === "1"){
+        return [4426,5258];
+      }
+      if (TP === "2"){
+        return [8954,8955];
+      }
+    }
+    if (A === "4"){
+      if (TP === "1"){
+        return [154,2187];
+      }
+      if (TP === "2"){
+        return [9982,9916];
+      }
+    }
+    if (A === "5"){
+      if (TP === "1"){
+        return [6371,null];
+      }
+      if (TP === "2"){
+        return [4096,null];
+      }
+    }
+  }
+}
+
+
+function ExtractICS() {
+  const first = new Date();
+  const last = new Date();
+  first.setMonth(first.getMonth()-11);
+  last.setMonth(last.getMonth()+13);
+  
+  var [id1, id2] = choixId();
+  const url1 = "planning.univ-ubs.fr/jsp/custom/modules/plannings/anonymous_cal.jsp?resources="+id1+"&projectId=1&calType=ical&firstDate="+first.getFullYear()+"-"+first.getMonth()+"-"+first.getDate()+"&lastDate="+last.getFullYear()+"-"+last.getMonth()+"-"+last.getDate();
+  const events1 = parseICS(url1);
+  let eventsfiltered1 = events1.filter(s => {
+  const summaryOk = !ignoredCourses.some(word => s.name.includes(word));
+  return summaryOk;
+  });
+  if (id2 == null){
+    return eventsfiltered1;
+  }
+  else {
+    const url2 = "planning.univ-ubs.fr/jsp/custom/modules/plannings/anonymous_cal.jsp?resources="+id2+"&projectId=1&calType=ical&firstDate="+first.getFullYear()+"-"+first.getMonth()+"-"+first.getDate()+"&lastDate="+last.getFullYear()+"-"+last.getMonth()+"-"+last.getDate();
+    const events2 = parseICS(url2);
+    let eventsfiltered2 = events2.filter(s => {
+    const summaryOk = !ignoredCourses.some(word => s.name.includes(word));
+    return summaryOk;
+    });
+    var eventsConcat = eventsfiltered1.concat(eventsfiltered2);
+    return eventsConcat;
+  }
+}
+
+
 function planning(semestre){
   var url = "https://planningsup.app/api/v1/calendars?p=ensibs." + FORMATION + "." + A + "emeannee.semestre" + semestre + "s" + semestre + ".tp" + TP;
   var response = UrlFetchApp.fetch(url);
@@ -621,7 +818,13 @@ function url() {
   return eventsConcat;
 }
 
-let uairaile = url();
+function laData(){
+  let miam = ExtractICS();
+  if (miam == 0){
+    miam = url();
+  }
+  return miam;
+}
 
 function getEventsTodayFromJson(jsonData) {
   const auj = new Date();
@@ -736,7 +939,7 @@ function PlusOrMinus(jsonData, semainesRestantes) {
 }
 
 function calculateWeeks(choix) {
-  var jsonData=uairaile;
+  var jsonData=laData();
   let semainesRestantes = 0;
   let foundEvents = false;
   while (!foundEvents) {
@@ -797,7 +1000,7 @@ function nombreSemaine(){
 
 function weeklySummary(){
   if (ntfweek === true) {
-    const data = uairaile;
+    const data = laData();
     const week = getEventsWeekFromJson(data);
   
     let eventsSemaine = week.filter(s => {
@@ -859,7 +1062,7 @@ function formatTime(date) {
 }
 
 function weekweek(){
-  const data = uairaile;
+  const data = laData();
   const week = getEventsWeekFromJson(data);
 
   let eventsSemaine = week.filter(s => {
@@ -896,7 +1099,7 @@ function timetime(){
 
 function sendSlotNotification() {
   const now = new Date();
-  const events = getEventsTodayFromJson(uairaile);
+  const events = getEventsTodayFromJson(laData());
   const slotsNow = getRelevantSlotsForDay(events, now);
 
   slotsNow.forEach(s => {
@@ -946,7 +1149,7 @@ function scheduleDailyNotifications() {
     return;
   }
   const aujo = new Date();
-  const data = uairaile;
+  const data = laData();
   const events = getEventsTodayFromJson(data);
   let slotsToday = getRelevantSlotsForDay(events, aujo);
   slotsToday = slotsToday.filter(s => {
@@ -1010,7 +1213,7 @@ function affichageTemps(secondes){
 
 // Debug si besoin
 function testGetEventsToday() {
-  const eventsToday = getEventsTodayFromJson(uairaile);
+  const eventsToday = getEventsTodayFromJson(laData());
   eventsToday.forEach(ev => {
     Logger.log("Événement: " + ev.summary);
     Logger.log("Début: " + ev.start);
