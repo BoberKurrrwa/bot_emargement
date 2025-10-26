@@ -482,6 +482,12 @@ function withRetry(fn, delayMs) {
 }
 
 function emargement() {
+  var now = new Date();
+  now.setMinutes(now.getMinutes()+8);
+  ScriptApp.newTrigger("verif")
+    .timeBased()
+    .at(now)
+    .create();
   var lien = withRetry(testLogin, 2500);
   return lien;
 }
@@ -529,6 +535,24 @@ function randomize(){
   let laps1 = Math.floor(Math.random() * 60000);      
   Logger.log("Attente de : "+(laps1/1000));
   Utilities.sleep(laps1);
+}
+
+function verif() {
+  const now = new Date();
+  const events = getEventsTodayFromJson(laData());
+  const slotsNow = getRelevantSlotsForDay(events, now);
+
+  slotsNow.forEach(s => {
+    if (Math.abs(s.slotStart.getTime() - now.getTime()) < 3600*1000) {
+      var lien=emargement();
+      if (lien === null){
+        return;
+      }
+      else {
+        sendNtfyNotification("🤖 Je viens d'émarger pour vous à "+ timetime() +" pour votre cours de :\n\n"+ s.summary +"\n\nde " + formatTime(s.slotStart) + " à " + formatTime(s.slotEnd)+" !", topic);
+      }
+    }
+  });
 }
 
 function attenteEmargement() {
@@ -1128,6 +1152,7 @@ function sendSlotNotification() {
 function scheduleDailyNotifications() {
   clearOldTriggers("sendSlotNotification");
   clearOldTriggers("attenteEmargement");
+  clearOldTriggers("verif");
   clearOldTriggers("scheduleDailyNotifications");
   clearOldTriggers("weeklySummary");
   var demain = aujourdhui;
