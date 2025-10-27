@@ -483,7 +483,7 @@ function withRetry(fn, delayMs) {
 
 function emargement() {
   var now = new Date();
-  now.setMinutes(now.getMinutes()+8);
+  now.setMinutes(now.getMinutes()+7);
   ScriptApp.newTrigger("verif")
     .timeBased()
     .at(now)
@@ -543,7 +543,7 @@ function verif() {
   const slotsNow = getRelevantSlotsForDay(events, now);
 
   slotsNow.forEach(s => {
-    if (Math.abs(s.slotStart.getTime() - now.getTime()) < 3600*1000) {
+    if (s.slotStart.getTime() < now.getTime() && s.slotEnd.getTime() > now.getTime()) {
       var lien=emargement();
       if (lien === null){
         return;
@@ -551,6 +551,7 @@ function verif() {
       else {
         sendNtfyNotification("🤖 Je viens d'émarger pour vous à "+ timetime() +" pour votre cours de :\n\n"+ s.summary +"\n\nde " + formatTime(s.slotStart) + " à " + formatTime(s.slotEnd)+" !", topic);
       }
+      clearOldTriggers("verif");
     }
   });
 }
@@ -561,16 +562,15 @@ function attenteEmargement() {
   const slotsNow = getRelevantSlotsForDay(events, now);
 
   slotsNow.forEach(s => {
-    if (Math.abs(s.slotStart.getTime() - now.getTime()) < 3600*1000) {
-      if (skip === false){//permet de skip l'attente si on le lance en étant déjà en cours
-        randomize();
-        var lien=emargement();
-        if (lien === null){
-          sendNtfyNotification("Vous avez déjà émargé !", topic);
-        }
-        else {
-          sendNtfyNotification("🤖 Je viens d'émarger pour vous à "+ timetime() +" pour votre cours de :\n\n"+ s.summary +"\n\nde " + formatTime(s.slotStart) + " à " + formatTime(s.slotEnd)+" !", topic);
-        }
+    //if (Math.abs(s.slotStart.getTime() - now.getTime()) < 3600*1000) {
+    if (s.slotStart.getTime() < now.getTime() && s.slotEnd.getTime() > now.getTime()) {
+      randomize();
+      var lien=emargement();
+      if (lien === null){
+        sendNtfyNotification("Vous avez déjà émargé !", topic);
+      }
+      else {
+        sendNtfyNotification("🤖 Je viens d'émarger pour vous à "+ timetime() +" pour votre cours de :\n\n"+ s.summary +"\n\nde " + formatTime(s.slotStart) + " à " + formatTime(s.slotEnd)+" !", topic);
       }
     }
   });
@@ -1142,7 +1142,7 @@ function sendSlotNotification() {
   const slotsNow = getRelevantSlotsForDay(events, now);
 
   slotsNow.forEach(s => {
-    if (Math.abs(s.slotStart.getTime() - now.getTime()) < 3600*1000) {
+    if (s.slotStart.getTime() < now.getTime() && s.slotEnd.getTime() > now.getTime()) {
       if (emarger === false) {
       sendNtfyNotification("📚 C'est l'heure d’émarger pour : \n\n" + s.summary + " \n\n" + formatTime(s.slotStart) + " à " + formatTime(s.slotEnd) + " \n\n" + s.location, topic);
       }
