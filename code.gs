@@ -907,7 +907,7 @@ function getEventsWeekFromJson(jsonData) {
   let eventsWeek = [];
   for (let i = 0; i < 5; i++) {
     const currentDay = aujourdhui;
-    currentDay.setDate(j + i);
+    currentDay.setDate(j + diff + i);
 
     jsonData.forEach(ev => {
       const start = new Date(ev.start);
