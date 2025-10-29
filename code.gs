@@ -1170,23 +1170,31 @@ function scheduleDailyNotifications() {
   clearOldTriggers("verif");
   clearOldTriggers("scheduleDailyNotifications");
   clearOldTriggers("weeklySummary");
-  var demain = aujourdhui;
+  var demain = new Date();
   demain.setDate(demain.getDate() + 1);
-  demain.setHours(7, 30, 0, 0);
-  ScriptApp.newTrigger("scheduleDailyNotifications")
-      .timeBased()
-      .at(demain)
-      .create();
-  demain.setHours(7, 0, 0, 0);
   if (d === 0) {
+    demain.setHours(7, 0, 0, 0);
     ScriptApp.newTrigger("weeklySummary")
       .timeBased()
       .at(demain)
       .create(); 
   }
+  demain.setHours(7, 30, 0, 0);
+  ScriptApp.newTrigger("scheduleDailyNotifications")
+      .timeBased()
+      .at(demain)
+      .create();
   // Si on est le week-end :
   if (d === 0 || d === 6) { 
     return;
+  }
+  if (d === 1 && getEventsWeekFromJson(laData()) == 0) {
+    clearOldTriggers("scheduleDailyNotifications");
+    demain.setDate(demain.getDate() + 5);
+    ScriptApp.newTrigger("scheduleDailyNotifications")
+      .timeBased()
+      .at(demain)
+      .create();
   }
   const aujo = new Date();
   const events = getEventsTodayFromJson(laData());
