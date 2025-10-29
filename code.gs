@@ -1172,29 +1172,45 @@ function scheduleDailyNotifications() {
   clearOldTriggers("weeklySummary");
   var demain = new Date();
   demain.setDate(demain.getDate() + 1);
-  if (d === 0) {
-    demain.setHours(7, 0, 0, 0);
-    ScriptApp.newTrigger("weeklySummary")
-      .timeBased()
-      .at(demain)
-      .create(); 
-  }
   demain.setHours(7, 30, 0, 0);
   ScriptApp.newTrigger("scheduleDailyNotifications")
       .timeBased()
       .at(demain)
       .create();
-  // Si on est le week-end :
-  if (d === 0 || d === 6) { 
-    return;
+  if (d === 5) {
+    clearOldTriggers("scheduleDailyNotifications");
+    var lundi = new Date();
+    lundi.setDate(lundi.getDate() + 3);
+    lundi.setHours(7, 0, 0, 0);
+    ScriptApp.newTrigger("weeklySummary")
+      .timeBased()
+      .at(lundi)
+      .create(); 
+    lundi.setHours(7, 30, 0, 0);
+    ScriptApp.newTrigger("scheduleDailyNotifications")
+      .timeBased()
+      .at(lundi)
+      .create();
   }
+
   if (d === 1 && getEventsWeekFromJson(laData()) == 0) {
     clearOldTriggers("scheduleDailyNotifications");
-    demain.setDate(demain.getDate() + 5);
+    demain.setDate(demain.getDate() + 6);
     ScriptApp.newTrigger("scheduleDailyNotifications")
       .timeBased()
       .at(demain)
       .create();
+    demain.setHours(7, 0, 0, 0);
+    ScriptApp.newTrigger("weeklySummary")
+      .timeBased()
+      .at(demain)
+      .create(); 
+    return;
+  }
+
+  // Si on est le week-end :
+  if (d === 0 || d === 6) { 
+    return;
   }
   const aujo = new Date();
   const events = getEventsTodayFromJson(laData());
