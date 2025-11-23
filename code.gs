@@ -940,6 +940,12 @@ function getRelevantSlotsForDay(events, date) {
     sameDayEvents.forEach(ev => {
       // Si le créneau chevauche l'événement
       if (ev.start < slotEnd && ev.end > slotStart) {
+        // --- Vérifier si ce créneau existe déjà ---
+        const exists = result.some(r =>
+          r.slotStart.getTime() === slotStart.getTime() &&
+          r.slotEnd.getTime() === slotEnd.getTime()
+        );
+        if (exists) return;
         result.push({
           slotStart,
           slotEnd,
