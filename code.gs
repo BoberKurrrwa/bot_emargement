@@ -588,7 +588,7 @@ function attente(){
     heure.setMinutes(heure.getMinutes()+laps);
     Logger.log("L'émargement s'effectuera dans plus de "+laps+" minutes");
     ScriptApp.newTrigger("attenteEmargement")
-    .timeBased
+    .timeBased()
     .at(heure)
     .create();
     return true;
