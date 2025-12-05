@@ -810,11 +810,11 @@ function appel(icsUrl){
 function ExtractICS() {
   const first = new Date();
   const last = new Date();
-  first.setMonth(first.getMonth()-11);
-  last.setMonth(last.getMonth()+13);
+  first.setMonth(first.getMonth()-12);
+  last.setMonth(last.getMonth()+12);
 
   var [id1, id2] = choixId();
-  const url1 = "planning.univ-ubs.fr/jsp/custom/modules/plannings/anonymous_cal.jsp?resources="+id1+"&projectId=1&calType=ical&firstDate="+first.getFullYear()+"-"+first.getMonth()+"-"+first.getDate()+"&lastDate="+last.getFullYear()+"-"+last.getMonth()+"-"+last.getDate();
+  const url1 = "planning.univ-ubs.fr/jsp/custom/modules/plannings/anonymous_cal.jsp?resources="+id1+"&projectId=1&calType=ical&firstDate="+first.getFullYear()+"-"+(first.getMonth()+1)+"-"+first.getDate()+"&lastDate="+last.getFullYear()+"-"+(last.getMonth()+1)+"-"+last.getDate();
   
   var events1 = appel(url1);
   
