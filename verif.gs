@@ -1,4 +1,4 @@
-FORMATION = "cyberdefense" //cyberdefense, cyberlog ou cyberdata
+FORMATION = "" //cyberdefense, cyberlog ou cyberdata
 A = "" //3, 4 ou 5
 TP = "" //1, 2, 3, 4, 5 ou 6
 
