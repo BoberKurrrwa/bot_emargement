@@ -24,6 +24,6 @@ Il ne vous manque plus qu'à **Exécuter** la fonction _globale_ (la première q
 
 Tout comme pour le code sur l'émargement, si c'est un nouveau fichier et qu'il n'a pas encore d'autorisation, c'est normal si Google vous demande de nouveau des accès.
 
-Il ne vous reste plus qu'à attendre la fin de l'exécution du code et de voir si vous avez oublié des émargements ou non ! :
+Il ne vous reste plus qu'à attendre la fin de l'exécution du code et de voir si vous avez oublié des émargements ou non !
 
 <img width="873" height="305" alt="image" src="https://github.com/user-attachments/assets/79aca653-7bc7-4692-929b-302d2b14b275" />
