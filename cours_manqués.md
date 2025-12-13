@@ -1,10 +1,8 @@
-# Vérification des cours manqués
-Il nous est tous arrivé d'oublier d'émarger... Mais savez-vous combien, et surtout, lesquels ?
-Comme pour l'émargement, j'utilise [Google Apps script](https://developers.google.com/apps-script). 
+# Vérification des cours non-émargés
+Il nous est tous arrivé d'oublier d'émarger... Mais savez-vous combien de cours, et surtout, lesquels ?
+Comme pour l'[émargement](README.md), j'utilise [Google Apps script](https://developers.google.com/apps-script). 
 
 Le code se trouve [ici](verif.gs).
-
-Vous pouvez également consulter mon projet principal afin de[recevoir des notifications pour penser à émarger (ou d'émarger automatiquement)](README.md).
 
 ## 📋 Guide d'utilisation
 
