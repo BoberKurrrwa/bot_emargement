@@ -89,16 +89,13 @@ function mergeCookieJar(oldJar, newSetCookies) {
 }
 
 function submitCasLogin(html, username, password, cookieJar) {
-  // 1️⃣ Extraire action du formulaire
   const actionMatch = html.match(/<form[^>]*action="([^"]+)"/i);
   if (!actionMatch) throw new Error("Impossible de trouver l'action du formulaire");
   let actionUrl = actionMatch[1];
   if (!/^https?:/i.test(actionUrl)) {
-    // URL relative → compléter avec le domaine IdP
     actionUrl = "https://cas.univ-ubs.fr/" + actionUrl.replace(/^\/?/, "");
   }
 
-  // 2️⃣ Extraire champs hidden
   const inputs = {};
   const regex = /<input[^>]*type="hidden"[^>]*name="([^"]+)"[^>]*value="([^"]*)"/gi;
   let m;
@@ -106,11 +103,9 @@ function submitCasLogin(html, username, password, cookieJar) {
     inputs[m[1]] = m[2];
   }
 
-  // 3️⃣ Ajouter username & password
   inputs["username"] = username;
   inputs["password"] = password;
 
-  // 4️⃣ Envoyer POST vers CAS
   const res = UrlFetchApp.fetch("https://cas.univ-ubs.fr/login", {
     method: "post",
     payload: inputs,
@@ -137,11 +132,9 @@ function handleTicketRedirect(response, jar) {
     return null;
   }
 
-  // Vérifie si c’est bien un ticket CAS (ST-xxxxx)
   if (location.includes("ticket=")) {
     Logger.log("Ticket CAS détecté → " + location);
 
-    // Ici on arrête de suivre l’IdP et on appelle Moodle directement
     let moodleRes = UrlFetchApp.fetch(location, {
       method: "get",
       headers: {
@@ -154,7 +147,6 @@ function handleTicketRedirect(response, jar) {
     Logger.log("Moodle response code: " + moodleRes.getResponseCode());
     Logger.log("Moodle headers: " + JSON.stringify(moodleRes.getAllHeaders(), null, 2));
 
-    // Récupère le vrai cookie de session Moodle
     let setCookie = moodleRes.getAllHeaders()["Set-Cookie"];
     if (setCookie) {
       jar.push(setCookie.split(";")[0]);
@@ -170,15 +162,12 @@ function handleTicketRedirect(response, jar) {
 
 function htmlDecode(str) {
   if (!str) return str;
-  // hex numeric first
   str = str.replace(/&#x([0-9a-fA-F]+);/g, function(_, hex) {
     return String.fromCharCode(parseInt(hex, 16));
   });
-  // decimal numeric
   str = str.replace(/&#(\d+);/g, function(_, dec) {
     return String.fromCharCode(Number(dec));
   });
-  // named entities (add more if needed)
   const named = {
     '&amp;': '&',
     '&lt;': '<',
@@ -195,31 +184,27 @@ function htmlDecode(str) {
 function extractFormFields(body, baseUrl) {
   if (typeof body !== 'string') body = body.getContentText();
 
-  // support action="..." or action='...' or action=unquoted
   const actionMatch = body.match(/<form[^>]*\saction=(?:"([^"]+)"|'([^']+)'|([^>\s]+))/i);
   let actionUrl = actionMatch ? (actionMatch[1] || actionMatch[2] || actionMatch[3]) : null;
   actionUrl = htmlDecode(actionUrl);
 
-  // Décoder et récupérer RelayState / SAMLResponse (handle single/double quotes)
   const relayMatch = body.match(/name=['"]?RelayState['"]?[^>]*value=(?:"([^"]*)"|'([^']*)'|([^>\s]*))/i);
   const samlMatch  = body.match(/name=['"]?SAMLResponse['"]?[^>]*value=(?:"([^"]*)"|'([^']*)'|([^>\s]*))/i);
 
   const relayState = relayMatch ? htmlDecode(relayMatch[1] || relayMatch[2] || relayMatch[3]) : null;
   const samlResponse = samlMatch ? htmlDecode(samlMatch[1] || samlMatch[2] || samlMatch[3]) : null;
 
-  // Si actionUrl est relatif, le rendre absolu en utilisant baseUrl
+
   if (actionUrl && !/^https?:\/\//i.test(actionUrl)) {
     if (/^\/\//.test(actionUrl)) {
-      // protocol-relative //domain/path
       actionUrl = 'https:' + actionUrl;
     } else if (/^\//.test(actionUrl) && baseUrl) {
       const m = baseUrl.match(/^(https?:\/\/[^\/]+)/i);
       if (m) actionUrl = m[1] + actionUrl;
     } else if (baseUrl && !/^\w+:/.test(actionUrl)) {
-      // relative without leading slash
       const m = baseUrl.match(/^(https?:\/\/[^\/]+)(\/.*)?$/i);
       if (m) {
-        const basePath = (m[2] || '/').replace(/\/[^\/]*$/, '/'); // parent path
+        const basePath = (m[2] || '/').replace(/\/[^\/]*$/, '/');
         actionUrl = m[1] + basePath + actionUrl.replace(/^\/+/, '');
       }
     }
@@ -229,11 +214,10 @@ function extractFormFields(body, baseUrl) {
 }
 
 function extractPresenceLink(html) {
-  // Regex pour attraper <a href="..."> contenant "attendance/view.php"
   const regex = /https:\/\/moodle\.univ-ubs\.fr\/mod\/attendance\/view\.php\?id=\d+/i;
   const match = html.match(regex);
   if (match) {
-    return match[0]; // lien complet
+    return match[0];
   }
   return null;
 }
@@ -249,7 +233,6 @@ function testLogin() {
   let jar = "";
   let jarjarjar = "";
   let indexphp ="";
-  // 1️⃣ Première requête GET pour initialiser la session
   let res1 = UrlFetchApp.fetch(moodleUrl, {
     method: "get",
     muteHttpExceptions: true,
@@ -472,7 +455,7 @@ function withRetry(fn, delayMs) {
     nbEssais++;
     try {
       Logger.log("Essaie numéro " + nbEssais);
-      let result = fn(); // essaie d’exécuter ta fonction
+      let result = fn(); // essaie d’exécuter la fonction
       return result; // si ça marche, on sort
     } catch (e) {
       Logger.log("Erreur détectée : " + e.message);
@@ -512,7 +495,7 @@ function sendNtfyNotification(message, topic) {
 
       if (code >= 200 && code < 300) {
         Logger.log("✅ Notification envoyée avec succès (tentative " + attempt + ")");
-        return; // succès → on sort
+        return;
       } else if (code === 429) {
         Logger.log("⚠️ Code 429 reçu, attente avant nouvelle tentative...");
       } else {
@@ -522,7 +505,6 @@ function sendNtfyNotification(message, topic) {
       Logger.log("⚠️ Erreur réseau : " + e.message);
     }
 
-    // Vérifie la limite max d’essais
     if (attempt >= maxAttempts) {
       Logger.log("🚨 Abandon après " + maxAttempts + " tentatives d’envoi de notification.");
       return;
@@ -938,9 +920,8 @@ function getRelevantSlotsForDay(events, date) {
     const slotEnd   = new Date(date.getFullYear(), date.getMonth(), date.getDate(), endParts[0], endParts[1]);
 
     sameDayEvents.forEach(ev => {
-      // Si le créneau chevauche l'événement
+      // Si l'évènement chevauche plusieurs créneaux
       if (ev.start < slotEnd && ev.end > slotStart) {
-        // --- Vérifier si ce créneau existe déjà ---
         const exists = result.some(r =>
           r.slotStart.getTime() === slotStart.getTime() &&
           r.slotEnd.getTime() === slotEnd.getTime()
@@ -959,8 +940,8 @@ function getRelevantSlotsForDay(events, date) {
 }
 
 function formatSummary(hoursFloat) {
-  const h = Math.floor(hoursFloat); // partie entière → heures
-  const m = Math.round((hoursFloat - h) * 60); // reste → minutes
+  const h = Math.floor(hoursFloat); 
+  const m = Math.round((hoursFloat - h) * 60); 
   return `${h}h${m.toString().padStart(2, "0")}`;
 }
 
@@ -1067,7 +1048,6 @@ function weeklySummary(){
     if (eventsSemaine == 0) {
       return;
     }
-  // Grouper par nom et calculer la durée totale
     const summaryMap = {};
   
     eventsSemaine.forEach(ev => {
@@ -1078,19 +1058,18 @@ function weeklySummary(){
       }
       summaryMap[ev.summary].hours += durationHours;
     });
-    // Transformer en tableau pour trier
     let resultArray = Object.entries(summaryMap).map(([summary, data]) => ({
       summary,
       hours: data.hours
     }));
-    // Fonction pour attribuer une priorité CM → TD → TP
+    // Fonction pour attribuer une priorité CM > TD > TP
     function getPriority(summary) {
       if (summary.startsWith("[CM")) return 1;
       if (summary.startsWith("[TD")) return 2;
       if (summary.startsWith("[TP")) return 3;
       return 4; // si autre chose
     }
-    // Trier : priorité CM/TD/TP puis par ordre alphabétique
+    // Trier par priorité puis par ordre alphabétique
     resultArray.sort((a, b) => {
       const prioDiff = getPriority(a.summary) - getPriority(b.summary);
       if (prioDiff !== 0) return prioDiff;
@@ -1239,7 +1218,7 @@ function scheduleDailyNotifications() {
     return;
   }
 
-  // si le créneau est futur → on programme le trigger normalement
+  // si le créneau est futur, on programme le trigger
   ScriptApp.newTrigger("sendSlotNotification")
     .timeBased()
     .at(s.slotStart)
@@ -1271,19 +1250,6 @@ function affichageTemps(secondes){
   const secsec = secondes % 60;                
   return {minmin, secsec};
 }
-
-
-// Debug si besoin
-function testGetEventsToday() {
-  const eventsToday = getEventsTodayFromJson(laData());
-  eventsToday.forEach(ev => {
-    Logger.log("Événement: " + ev.summary);
-    Logger.log("Début: " + ev.start);
-    Logger.log("Fin: " + ev.end);
-    Logger.log("Lieu: " + ev.location);
-  });
-}
-
 
 
 

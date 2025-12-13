@@ -1,7 +1,11 @@
 # bot_emargement
 Bienvenue sur mon bot qui vous permettra de recevoir des notifications (voire émarger) pour l'ENSIBS (valable pour les 3, 4 et 5A de cyberdéfense, cyberdata et cyberlog) via [Google Apps script](https://developers.google.com/apps-script).
 
+Le code se trouve [ici](main.gs).
+
 Le point fort de ce projet ? Aucunement besoin de louer un serveur pour héberger un script, vous avez simplement besoin d'avoir un compte Google !
+
+Vous pouvez également aller consulter mon code afin de [vérifier les cours ou vous avez manqué l'émargement](cours_manqués.md).
 
 > [!CAUTION]
 > Il est strictement interdit d'émarger alors que vous n'êtes pas présent en cours, pensez à annuler l'émargement auto en passant la variable _emarger_ à *false* si vous n'êtes pas présent et que vous laissez le bot en émargement auto.
