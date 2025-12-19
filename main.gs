@@ -834,25 +834,35 @@ function appelUrl(url){
 }
 
 function planning(semestre){
-  var url = "https://planningsup.app/api/v1/calendars?p=ensibs." + FORMATION + "." + A + "emeannee.semestre" + semestre + "s" + semestre + ".tp" + TP;
+  var url = "https://planningsup.app/api/plannings/ensibs." + FORMATION + "." + A + "emeannee.semestre" + semestre + "s" + semestre + ".tp" + TP + "?events=true";
   var response = appelUrl(url);
   var json = JSON.parse(response.getContentText());
   return json
 }
 
 function url() {
-  a=planning(A*2-1);
+  ab=planning(A*2-1);
   b=planning(A*2);
-  var events1 = (a && Array.isArray(a.plannings) && a.plannings[0] && Array.isArray(a.plannings[0].events))
-                ? a.plannings[0].events : [];
-  var events2 = (b && Array.isArray(b.plannings) && b.plannings[0] && Array.isArray(b.plannings[0].events))
-                ? b.plannings[0].events : [];
+  var events1 = (ab && Array.isArray(ab.events))
+                ? ab.events : [];
+  var events2 = (b && Array.isArray(b.events))
+                ? b.events : [];
   var eventsConcat = events1.concat(events2);
   eventsConcat = eventsConcat.filter(s => {
-  const summaryOk = !ignoredCourses.some(word => s.name.includes(word));
+  const summaryOk = !ignoredCourses.some(word => s.summary.includes(word));
   return summaryOk;
   });
-  return eventsConcat;
+  
+  let eventsClean = [];
+  eventsConcat.forEach(ev => {
+    eventsClean.push({
+          name: ev.summary,
+          start: new Date(ev.startDate),
+          end: new Date(ev.endDate),
+          location: ev.location || ""
+        });
+  });
+  return eventsClean;
 }
 
 function laData(){
