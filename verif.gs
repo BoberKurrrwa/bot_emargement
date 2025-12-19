@@ -731,7 +731,7 @@ function appelUrl(url){
 }
 
 function planning(semestre){
-  var url = "https://planningsup.app/api/v1/calendars?p=ensibs." + FORMATION + "." + A + "emeannee.semestre" + semestre + "s" + semestre + ".tp" + TP;
+  var url = "https://planningsup.app/api/v1/calendars?p=ensibs." + FORMATION + "." + A + "emeannee.semestre" + semestre + "s" + semestre + ".tp" + TP + "?events=true";
   var response = appelUrl(url);
   var json = JSON.parse(response.getContentText());
   return json
