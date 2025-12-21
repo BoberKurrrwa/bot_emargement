@@ -1082,43 +1082,46 @@ function comparer(moodle){
       texte_prof_emarg += "\n" + correct_debut + " - " + correct_fin + " : " + ev.nom;
     });
     if (prof_emarg.length==1){
-      Logger.log("Le prof a émargé pour moi à ce cours : "+ texte_prof_emarg );
+      Logger.log("Le prof a émargé pour moi à ce cours : "+ texte_prof_emarg);
+
     } else {
-      Logger.log("Le prof a émargé pour moi à ces "+prof_emarg.length+" cours : "+ texte_prof_emarg );
+      Logger.log("Le prof a émargé pour moi à ces "+prof_emarg.length+" cours : "+ texte_prof_emarg);
     }
   }
-  if (getEventsWeekFromJson(laData()) != 0){
-    if (oublie == 0){
-      if (prof_emarg==0){
-        sendNtfyNotification("Je n'ai jamais oublié d'émarger sur des cours \n\n" + "Aucun prof n'a émargé pour moi", topic);
+  if (notif === "oui"){
+    if (getEventsWeekFromJson(laData()) != 0){
+      if (oublie == 0){
+        if (prof_emarg==0){
+          sendNtfyNotification("Je n'ai jamais oublié d'émarger sur des cours \n\n" + "Aucun prof n'a émargé pour moi", topic);
+        }
+        if (prof_emarg.length==1){
+          sendNtfyNotification("Je n'ai jamais oublié d'émarger sur des cours \n\n" + "Le prof a émargé pour moi à ce cours : "+ texte_prof_emarg, topic);
+        }
+        else {
+          sendNtfyNotification("Je n'ai jamais oublié d'émarger sur des cours \n\n" + "Le prof a émargé pour moi à ces "+prof_emarg.length+" cours : "+ texte_prof_emarg, topic);
+        }
       }
-      if (prof_emarg.length==1){
-        sendNtfyNotification("Je n'ai jamais oublié d'émarger sur des cours \n\n" + "Le prof a émargé pour moi à ce cours : "+ texte_prof_emarg, topic);
-      }
-      else {
-        sendNtfyNotification("Je n'ai jamais oublié d'émarger sur des cours \n\n" + "Le prof a émargé pour moi à ces "+prof_emarg.length+" cours : "+ texte_prof_emarg, topic);
-      }
-    }
-    if (oublie.length == 1){
-      if (prof_emarg==0){
-        sendNtfyNotification("Je n'ai pas émargé à ce cours :" + texte_oublie + "\n\n" + "Aucun prof n'a émargé pour moi", topic);
-      }
-      if (prof_emarg.length==1){
-        sendNtfyNotification("Je n'ai pas émargé à ce cours :" + texte_oublie + "\n\n" + "Le prof a émargé pour moi à ce cours : "+ texte_prof_emarg, topic);
-      }
-      else {
-        sendNtfyNotification("Je n'ai pas émargé à ce cours :" + texte_oublie + "\n\n" + "Le prof a émargé pour moi à ces "+prof_emarg.length+" cours : "+ texte_prof_emarg, topic);
-      }
-    }
-    else {
-      if (prof_emarg==0){
-        sendNtfyNotification("Je n'ai pas émargé à ces "+oublie.length+" cours :" + texte_oublie + "\n\n" + "Aucun prof n'a émargé pour moi", topic);
-      }
-      if (prof_emarg.length==1){
-        sendNtfyNotification("Je n'ai pas émargé à ces "+oublie.length+" cours :" + texte_oublie + "\n\n" + "Le prof a émargé pour moi à ce cours : "+ texte_prof_emarg, topic);
+      if (oublie.length == 1){
+        if (prof_emarg==0){
+          sendNtfyNotification("Je n'ai pas émargé à ce cours :" + texte_oublie + "\n\n" + "Aucun prof n'a émargé pour moi", topic);
+        }
+        if (prof_emarg.length==1){
+          sendNtfyNotification("Je n'ai pas émargé à ce cours :" + texte_oublie + "\n\n" + "Le prof a émargé pour moi à ce cours : "+ texte_prof_emarg, topic);
+        }
+        else {
+          sendNtfyNotification("Je n'ai pas émargé à ce cours :" + texte_oublie + "\n\n" + "Le prof a émargé pour moi à ces "+prof_emarg.length+" cours : "+ texte_prof_emarg, topic);
+        }
       }
       else {
-        sendNtfyNotification("Je n'ai pas émargé à ces "+oublie.length+" cours :" + texte_oublie + "\n\n" + "Le prof a émargé pour moi à ces "+prof_emarg.length+" cours : "+ texte_prof_emarg, topic);
+        if (prof_emarg==0){
+          sendNtfyNotification("Je n'ai pas émargé à ces "+oublie.length+" cours :" + texte_oublie + "\n\n" + "Aucun prof n'a émargé pour moi", topic);
+        }
+        if (prof_emarg.length==1){
+          sendNtfyNotification("Je n'ai pas émargé à ces "+oublie.length+" cours :" + texte_oublie + "\n\n" + "Le prof a émargé pour moi à ce cours : "+ texte_prof_emarg, topic);
+        }
+        else {
+          sendNtfyNotification("Je n'ai pas émargé à ces "+oublie.length+" cours :" + texte_oublie + "\n\n" + "Le prof a émargé pour moi à ces "+prof_emarg.length+" cours : "+ texte_prof_emarg, topic);
+        }
       }
     }
   }
