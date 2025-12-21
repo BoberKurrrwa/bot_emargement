@@ -23,7 +23,7 @@ const slots1 = [
 
 
 function scheduleRecap() {
-  clearOldTriggers("globale");
+  clearOldTriggers("scheduleRecap");
   var demain = new Date();
   var tdy = new Date();
   demain.setDate(demain.getDate() + 1);
@@ -35,7 +35,7 @@ function scheduleRecap() {
   if (tdy.getDay() != 4){
     return;
   } else {
-    clearOldTriggers("globale");
+    clearOldTriggers("scheduleRecap");
     var semaine_pro = new Date();
     semaine_pro.setDate(semaine_pro.getDate() + 7);
     semaine_pro.setHours(20, 0, 0, 0);
