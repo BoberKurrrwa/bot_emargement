@@ -19,20 +19,6 @@ const slots1 = [
   { start: "18:15", end: "19:45" }
 ];
 
-function globale() {
-  var lien = withRetry1(recupQuestion, 2500);
-  comparer(lien);
-}
-
-function clearOldTriggers(triggered) {
-  const triggers = ScriptApp.getProjectTriggers();
-  for (const t of triggers) {
-    if (t.getHandlerFunction() === triggered) {
-      ScriptApp.deleteTrigger(t);
-      Logger.log("Trigger supprimé");
-    }
-  }
-}
 
 function scheduleRecap() {
   clearOldTriggers("globale");
@@ -56,6 +42,21 @@ function scheduleRecap() {
         .at(semaine_pro)
         .create();
     globale();
+  }
+}
+
+function globale() {
+  var lien = withRetry1(recupQuestion, 2500);
+  comparer(lien);
+}
+
+function clearOldTriggers(triggered) {
+  const triggers = ScriptApp.getProjectTriggers();
+  for (const t of triggers) {
+    if (t.getHandlerFunction() === triggered) {
+      ScriptApp.deleteTrigger(t);
+      Logger.log("Trigger supprimé");
+    }
   }
 }
 
