@@ -5,7 +5,9 @@ TP = "" //1, 2, 3, 4, 5 ou 6
 var username = "" // mettez votre username moodle, du type exxxxxxx
 var password = "" // mettez votre mdp moodle
 
-const ignoredCourses1 = ["[CM] - Projet Cyber","[autonomie TD1] - Projet Cyber", "[autonomie TD2] - Projet Cyber", "[autonomie TD3] - Projet Cyber", "[BDE] Week-End de Cohésion (lundi)", "[BDE] Week-End de Cohésion (mardi)", "Lancement Le Robert : CD3+IC3 \\; CD4+IC4 (néo-entrants)", "[BDE] Réunion présentation WEC (Vannes)", "[A4 Vannes] Réunion d'information : mobilité internationale", "Activités GCC", "Activités HACK2G2", "[distanciel] Le Robert (néo-entrants+rattrapage) : certification blanche : A4+A5", "[distanciel] Le Robert - certification finale (+1/3 temps) : A4 (néo-entrants) ; A4+A5 (rattrapage)", "[A4 FISA] Examen TOEIC (session aménagée)"]; 
+const ignoredCourses = ["[CM] - Projet Cyber","[autonomie TD1] - Projet Cyber", "[autonomie TD2] - Projet Cyber", "[autonomie TD3] - Projet Cyber", "[BDE] Week-End de Cohésion (lundi)", "[BDE] Week-End de Cohésion (mardi)", "Lancement Le Robert : CD3+IC3 \\; CD4+IC4 (néo-entrants)", "[BDE] Réunion présentation WEC (Vannes)", "[A4 Vannes] Réunion d'information : mobilité internationale", "Activités GCC", "Activités HACK2G2", "[distanciel] Le Robert (néo-entrants+rattrapage) : certification blanche : A4+A5", "[distanciel] Le Robert - certification finale (+1/3 temps) : A4 (néo-entrants) ; A4+A5 (rattrapage)", "[A4 FISA] Examen TOEIC (session aménagée)"]; 
+
+const topic = ""; // topic pour ntfy.sh
 
 const slots1 = [
   { start: "08:00", end: "09:30" },
@@ -20,6 +22,82 @@ const slots1 = [
 function globale() {
   var lien = withRetry1(recupQuestion, 2500);
   comparer(lien);
+}
+
+function clearOldTriggers(triggered) {
+  const triggers = ScriptApp.getProjectTriggers();
+  for (const t of triggers) {
+    if (t.getHandlerFunction() === triggered) {
+      ScriptApp.deleteTrigger(t);
+      Logger.log("Trigger supprimé");
+    }
+  }
+}
+
+function scheduleRecapNotifications() {
+  clearOldTriggers("globale");
+  var demain = new Date();
+  var tdy = new Date();
+  demain.setDate(demain.getDate() + 1);
+  demain.setHours(20, 0, 0, 0);
+  ScriptApp.newTrigger("scheduleRecapNotifications")
+      .timeBased()
+      .at(demain)
+      .create();
+  if (tdy.getDay() != 4){
+    return;
+  } else {
+    clearOldTriggers("globale");
+    var semaine_pro = new Date();
+    semaine_pro.setDate(semaine_pro.getDate() + 7);
+    semaine_pro.setHours(20, 0, 0, 0);
+    ScriptApp.newTrigger("scheduleRecapNotifications")
+        .timeBased()
+        .at(semaine_pro)
+        .create();
+    globale();
+
+  }
+
+}
+
+function sendNtfyNotification(message, topic) {
+  const url = "https://ntfy.sh/" + topic;
+  const options = {
+    method: "post",
+    payload: message,
+    muteHttpExceptions: true,
+  };
+
+  let attempt = 0;
+  const maxAttempts = 10;
+  const baseDelay = 15000; // 15 secondes d’attente entre les essais
+
+  while (true) {
+    attempt++;
+    try {
+      const response = UrlFetchApp.fetch(url, options);
+      const code = response.getResponseCode();
+
+      if (code >= 200 && code < 300) {
+        Logger.log("✅ Notification envoyée avec succès (tentative " + attempt + ")");
+        return; // succès → on sort
+      } else if (code === 429) {
+        Logger.log("⚠️ Code 429 reçu, attente avant nouvelle tentative...");
+      } else {
+        Logger.log("❌ Erreur HTTP " + code + " : " + response.getContentText());
+      }
+    } catch (e) {
+      Logger.log("⚠️ Erreur réseau : " + e.message);
+    }
+
+    // Vérifie la limite max d’essais
+    if (attempt >= maxAttempts) {
+      Logger.log("🚨 Abandon après " + maxAttempts + " tentatives d’envoi de notification.");
+      return;
+    }
+    Utilities.sleep(baseDelay);
+  }
 }
 
 function decodeSamlParamsFromUrl(url) {
@@ -981,6 +1059,39 @@ function comparer(moodle){
       Logger.log("Le prof a émargé pour moi à ce cours : "+ texte_prof_emarg );
     } else {
       Logger.log("Le prof a émargé pour moi à ces "+prof_emarg.length+" cours : "+ texte_prof_emarg );
+    }
+  }
+  if (oublie == 0){
+    if (prof_emarg==0){
+      sendNtfyNotification("Je n'ai jamais oublié d'émarger sur des cours \n\n" + "Aucun prof n'a émargé pour moi", topic);
+    }
+    if (prof_emarg.length==1){
+      sendNtfyNotification("Je n'ai jamais oublié d'émarger sur des cours \n\n" + "Le prof a émargé pour moi à ce cours : "+ texte_prof_emarg, topic);
+    }
+    else {
+      sendNtfyNotification("Je n'ai jamais oublié d'émarger sur des cours \n\n" + "Le prof a émargé pour moi à ces "+prof_emarg.length+" cours : "+ texte_prof_emarg, topic);
+    }
+  }
+  if (oublie.length == 1){
+    if (prof_emarg==0){
+      sendNtfyNotification("Je n'ai pas émargé à ce cours :" + texte_oublie + "\n\n" + "Aucun prof n'a émargé pour moi", topic);
+    }
+    if (prof_emarg.length==1){
+      sendNtfyNotification("Je n'ai pas émargé à ce cours :" + texte_oublie + "\n\n" + "Le prof a émargé pour moi à ce cours : "+ texte_prof_emarg, topic);
+    }
+    else {
+      sendNtfyNotification("Je n'ai pas émargé à ce cours :" + texte_oublie + "\n\n" + "Le prof a émargé pour moi à ces "+prof_emarg.length+" cours : "+ texte_prof_emarg, topic);
+    }
+  }
+  else {
+    if (prof_emarg==0){
+      sendNtfyNotification("Je n'ai pas émargé à ces "+oublie.length+" cours :" + texte_oublie + "\n\n" + "Aucun prof n'a émargé pour moi", topic);
+    }
+    if (prof_emarg.length==1){
+      sendNtfyNotification("Je n'ai pas émargé à ces "+oublie.length+" cours :" + texte_oublie + "\n\n" + "Le prof a émargé pour moi à ce cours : "+ texte_prof_emarg, topic);
+    }
+    else {
+      sendNtfyNotification("Je n'ai pas émargé à ces "+oublie.length+" cours :" + texte_oublie + "\n\n" + "Le prof a émargé pour moi à ces "+prof_emarg.length+" cours : "+ texte_prof_emarg, topic);
     }
   }
 }
