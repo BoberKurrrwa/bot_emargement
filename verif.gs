@@ -34,13 +34,13 @@ function clearOldTriggers(triggered) {
   }
 }
 
-function scheduleRecapNotifications() {
+function scheduleRecap() {
   clearOldTriggers("globale");
   var demain = new Date();
   var tdy = new Date();
   demain.setDate(demain.getDate() + 1);
   demain.setHours(20, 0, 0, 0);
-  ScriptApp.newTrigger("scheduleRecapNotifications")
+  ScriptApp.newTrigger("scheduleRecap")
       .timeBased()
       .at(demain)
       .create();
@@ -51,14 +51,12 @@ function scheduleRecapNotifications() {
     var semaine_pro = new Date();
     semaine_pro.setDate(semaine_pro.getDate() + 7);
     semaine_pro.setHours(20, 0, 0, 0);
-    ScriptApp.newTrigger("scheduleRecapNotifications")
+    ScriptApp.newTrigger("scheduleRecap")
         .timeBased()
         .at(semaine_pro)
         .create();
     globale();
-
   }
-
 }
 
 function sendNtfyNotification(message, topic) {
