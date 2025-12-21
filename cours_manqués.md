@@ -15,7 +15,7 @@ Il vous faut remplir les variables définies dès le début du code :
 - `username` votre username pour la connexion à moodle (format *exxxxxxx*)
 - `password` votre password pour la connexion à moodle
 - `ignoredCourses` Ajoutez d'autres cours si jamais j'en ai oublié (il faut mettre **exactement** le nom présent dans l'emploie du temps)
-- `topic` Pour recevoir une notif une fois par semaine le vendredi à 20h des cours non-émargés
+- `topic` Topic ntfy.sh aifn de recevoir une notif une fois par semaine le vendredi à 20h des cours non-émargés (fonctionne en semaine de cours uniquement)
 
 ### 2. Exécuter la fonction _globale_ et autoriser les accès à votre script :
 
