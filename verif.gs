@@ -1002,7 +1002,7 @@ function comparer(moodle){
     var nom = ev.summary;
     newMoodle.forEach(md => {
       const mdStart = new Date(md.timestampDate);
-      if (mdStart.valueOf()<=1757311199000){
+      if (mdStart.valueOf()<=nb){
       } 
       else {
         if (mdStart.getDate() === start.getDate()){
@@ -1021,7 +1021,7 @@ function comparer(moodle){
   var nom = ev.summary;
     prof.forEach(pf => {
       const pfStart = new Date(pf.timestampDate);
-      if (pfStart.valueOf()<=1757311199000){
+      if (pfStart.valueOf()<=nb){
       } 
       else {
         if (pfStart.getDate() === start.getDate()){
