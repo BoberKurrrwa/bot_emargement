@@ -894,12 +894,11 @@ function getEventsTodayFromJson(jsonData) {
 
 function getEventsWeekFromJson(jsonData) {
   const diff = (d === 0 ? -6 : 1 - d);
-  aujourdhui.setDate(j + diff);
 
   let eventsWeek = [];
   for (let i = 0; i < 5; i++) {
-    const currentDay = aujourdhui;
-    currentDay.setDate(j + diff + i);
+    const currentDay = new Date();
+    currentDay.setDate(currentDay.getDate() + diff + i);
 
     jsonData.forEach(ev => {
       const start = new Date(ev.start);
@@ -914,6 +913,12 @@ function getEventsWeekFromJson(jsonData) {
       }
     });
   }
+  if(eventsWeek==0){
+    Logger.log("Semaine entreprise")
+  } else {
+    Logger.log("Semaine école")
+  }
+  Logger.log(eventsWeek);
   return eventsWeek;
 }
 
