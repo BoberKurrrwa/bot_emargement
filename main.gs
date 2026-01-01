@@ -808,7 +808,7 @@ function ExtractICS() {
     return eventsfiltered1;
   }
   else {
-    const url2 = "planning.univ-ubs.fr/jsp/custom/modules/plannings/anonymous_cal.jsp?resources="+id2+"&projectId=1&calType=ical&firstDate="+first.getFullYear()+"-"+first.getMonth()+"-"+first.getDate()+"&lastDate="+last.getFullYear()+"-"+last.getMonth()+"-"+last.getDate();
+    const url2 = "planning.univ-ubs.fr/jsp/custom/modules/plannings/anonymous_cal.jsp?resources="+id2+"&projectId=1&calType=ical&firstDate="+first.getFullYear()+"-"+(first.getMonth()+1)+"-"+first.getDate()+"&lastDate="+last.getFullYear()+"-"+(last.getMonth()+1)+"-"+last.getDate();
     var events2 = appel(url2);
     let eventsfiltered2 = events2.filter(s => {
     const summaryOk = !ignoredCourses.some(word => s.name.includes(word));
