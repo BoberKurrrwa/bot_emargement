@@ -803,7 +803,7 @@ function ExtractICS() {
   last.setMonth(last.getMonth()+12);
 
   var [id1, id2] = choixId();
-  const url1 = "planning.univ-ubs.fr/jsp/custom/modules/plannings/anonymous_cal.jsp?resources="+id1+"&projectId=1&calType=ical&firstDate="+first.getFullYear()+"-"+first.getMonth()+"-"+first.getDate()+"&lastDate="+last.getFullYear()+"-"+last.getMonth()+"-"+last.getDate();
+  const url1 = "planning.univ-ubs.fr/jsp/custom/modules/plannings/anonymous_cal.jsp?resources="+id1+"&projectId=1&calType=ical&firstDate="+first.getFullYear()+"-"+(first.getMonth()+1)+"-"+first.getDate()+"&lastDate="+last.getFullYear()+"-"+(last.getMonth()+1)+"-"+last.getDate();
   
   var events1 = appel(url1);
   
@@ -815,7 +815,7 @@ function ExtractICS() {
     return eventsfiltered1;
   }
   else {
-    const url2 = "planning.univ-ubs.fr/jsp/custom/modules/plannings/anonymous_cal.jsp?resources="+id2+"&projectId=1&calType=ical&firstDate="+first.getFullYear()+"-"+first.getMonth()+"-"+first.getDate()+"&lastDate="+last.getFullYear()+"-"+last.getMonth()+"-"+last.getDate();
+    const url2 = "planning.univ-ubs.fr/jsp/custom/modules/plannings/anonymous_cal.jsp?resources="+id2+"&projectId=1&calType=ical&firstDate="+first.getFullYear()+"-"+(first.getMonth()+1)+"-"+first.getDate()+"&lastDate="+last.getFullYear()+"-"+(last.getMonth()+1)+"-"+last.getDate();
     var events2 = appel(url2);
     let eventsfiltered2 = events2.filter(s => {
     const summaryOk = !ignoredCourses1.some(word => s.name.includes(word));
