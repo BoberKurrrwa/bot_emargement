@@ -1,3 +1,5 @@
+var version = 1.8;
+
 var emarger = false;
 
 FORMATION = "" //cyberdefense, cyberlog ou cyberdata
