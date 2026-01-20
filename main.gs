@@ -29,6 +29,7 @@ const slots = [
 ];
 var skip = false;
 
+
 function decodeSamlParamsFromUrl(url) {
   const qIndex = url.indexOf("?");
   const qs = qIndex >= 0 ? url.substring(qIndex + 1) : url;
@@ -1166,6 +1167,26 @@ function sendSlotNotification() {
   });
 }
 
+function checkVersion() {
+  const n_version = UrlFetchApp.fetch("https://raw.githubusercontent.com/BoberKurrrwa/bot_emargement/refs/heads/main/main.gs", {
+    method: "get",
+    followRedirects: false,
+    muteHttpExceptions: true
+  });
+
+  const texte = n_version.getContentText();
+  const premiereLigne = texte.split(/\r?\n/)[0];
+
+  const match = premiereLigne.match(/var\s+version\s*=\s*([0-9]+(?:\.[0-9]+)?)/);
+
+  if (version == match[1]){
+    Logger.log("La version du bot est à jour !")
+  }
+  else {
+    Logger.log("La version du bot n'est pas à jour. \nVous êtes en version " + version + " et la nouvelle version disponible est la " + match[1] +"\nVeuillez vous rendre sur https://github.com/BoberKurrrwa/bot_emargement/blob/main/main.gs")
+  }
+}
+
 function scheduleDailyNotifications() {
   clearOldTriggers("sendSlotNotification");
   clearOldTriggers("attenteEmargement");
@@ -1214,6 +1235,8 @@ function scheduleDailyNotifications() {
   if (d === 0 || d === 6) { 
     return;
   }
+
+  checkVersion();
   const aujo = new Date();
   const events = getEventsTodayFromJson(laData());
   let slotsToday = getRelevantSlotsForDay(events, aujo);
