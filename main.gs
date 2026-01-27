@@ -485,6 +485,7 @@ function sendNtfyNotification(message, topic) {
     payload: message,
     muteHttpExceptions: true,
   };
+  Logger.log(message);
 
   let attempt = 0;
   const maxAttempts = 10;
@@ -535,7 +536,6 @@ function verif() {
         return;
       }
       else {
-        Logger.log("🤖 Je viens d'émarger pour vous à "+ timetime() +" pour votre cours de :\n\n"+ s.summary +"\n\nde " + formatTime(s.slotStart) + " à " + formatTime(s.slotEnd)+" !");
         sendNtfyNotification("🤖 Je viens d'émarger pour vous à "+ timetime() +" pour votre cours de :\n\n"+ s.summary +"\n\nde " + formatTime(s.slotStart) + " à " + formatTime(s.slotEnd)+" !", topic);
       }
     }
@@ -553,11 +553,9 @@ function attenteEmargement() {
       randomize();
       var lien=emargement();
       if (lien === null){
-        Logger.log("Vous avez déjà émargé !");
         sendNtfyNotification("Vous avez déjà émargé !", topic);
       }
       else {
-        Logger.log("🤖 Je viens d'émarger pour vous à "+ timetime() +" pour votre cours de :\n\n"+ s.summary +"\n\nde " + formatTime(s.slotStart) + " à " + formatTime(s.slotEnd)+" !");
         sendNtfyNotification("🤖 Je viens d'émarger pour vous à "+ timetime() +" pour votre cours de :\n\n"+ s.summary +"\n\nde " + formatTime(s.slotStart) + " à " + formatTime(s.slotEnd)+" !", topic);
       }
     }
@@ -1108,7 +1106,6 @@ function weeklySummary(){
       totalHoursWeek += (ev.end - ev.start) / (1000 * 60 * 60);
       });
       resume += `\n\n🕒 Total semaine : ${formatSummary(totalHoursWeek)}`;
-      Logger.log(resume);
       sendNtfyNotification(resume, topic);
     }
   }
@@ -1151,8 +1148,7 @@ function sendSlotNotification() {
   slotsNow.forEach(s => {
     if (s.slotStart.getTime() < now.getTime() && s.slotEnd.getTime() > now.getTime()) {
       if (emarger === false) {
-      Logger.log("📚 C'est l'heure d’émarger pour : \n\n" + s.summary + " \n\n" + formatTime(s.slotStart) + " à " + formatTime(s.slotEnd) + " \n\n" + s.location);
-      sendNtfyNotification("📚 C'est l'heure d’émarger pour : \n\n" + s.summary + " \n\n" + formatTime(s.slotStart) + " à " + formatTime(s.slotEnd) + " \n\n" + s.location, topic);
+        sendNtfyNotification("📚 C'est l'heure d’émarger pour : \n\n" + s.summary + " \n\n" + formatTime(s.slotStart) + " à " + formatTime(s.slotEnd) + " \n\n" + s.location, topic);
       }
       if (emarger === true){
         if (skip === false){//permet de skip l'attente si on le lance en étant déjà en cours
@@ -1161,11 +1157,9 @@ function sendSlotNotification() {
         if (wait === false){
           var lien=emargement();
           if (lien === null){
-            Logger.log("Vous avez déjà émargé !");
             sendNtfyNotification("Vous avez déjà émargé !", topic);
           }
           else {
-            Logger.log("🤖 Je viens d'émarger pour vous à "+ timetime() +" pour votre cours de :\n\n"+ s.summary +"\n\nde " + formatTime(s.slotStart) + " à " + formatTime(s.slotEnd)+" !");
             sendNtfyNotification("🤖 Je viens d'émarger pour vous à "+ timetime() +" pour votre cours de :\n\n"+ s.summary +"\n\nde " + formatTime(s.slotStart) + " à " + formatTime(s.slotEnd)+" !", topic);
           }
         }
@@ -1258,7 +1252,6 @@ function scheduleDailyNotifications() {
   if (s.slotStart <= now && s.slotEnd > now) {
     Logger.log("On est déjà dans ce créneau → " + formatTime(s.slotStart)+"-" + formatTime(s.slotEnd));
     if (emarger === false) {
-      Logger.log("⚠️ Cours en cours : \n\n" + s.summary + ", \n" + s.location);
       sendNtfyNotification("⚠️ Cours en cours : \n\n" + s.summary + ", \n" + s.location, topic);
     }
     skip=true;
@@ -1276,7 +1269,6 @@ function scheduleDailyNotifications() {
   if (slotsToday == 0) {
     if (getEventsWeekFromJson(laData()) != 0){ 
       if (ntfjour === true) {
-        Logger.log("Eh beh jeune personne très respectable, tu n'as pas cours aujourd'hui !!!");
         sendNtfyNotification("Eh beh jeune personne très respectable, tu n'as pas cours aujourd'hui !!!", topic);
       }
     }
@@ -1289,7 +1281,6 @@ function scheduleDailyNotifications() {
     const ajd = events.map(ev =>
       formatTime(ev.start) + "-" + formatTime(ev.end) + " : " + ev.summary + ", " + ev.location +"\n").join("\n");
     if (ntfjour === true) {
-      Logger.log("📅 Planning du jour :\n\n" + ajd + "\n\n🕒 Total : " + formatSummary(totalHoursDay)+"\n");
       sendNtfyNotification("📅 Planning du jour :\n\n" + ajd + "\n\n🕒 Total : " + formatSummary(totalHoursDay)+"\n", topic);
     }
   }
