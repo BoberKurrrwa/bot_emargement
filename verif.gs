@@ -32,7 +32,7 @@ function scheduleRecap() {
       .timeBased()
       .at(demain)
       .create();
-  if (tdy.getDay() != 4){
+  if (tdy.getDay() != 5){
     return;
   } else {
     clearOldTriggers("scheduleRecap");
