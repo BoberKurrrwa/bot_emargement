@@ -69,7 +69,7 @@ function sendNtfyNotification(message, topic) {
     payload: message,
     muteHttpExceptions: true,
   };
-
+  Logger.log(message);
   let attempt = 0;
   const maxAttempts = 10;
   const baseDelay = 15000; // 15 secondes d’attente entre les essais
