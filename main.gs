@@ -1154,7 +1154,7 @@ function sendSlotNotification() {
         if (skip === false){//permet de skip l'attente si on le lance en étant déjà en cours
           var wait = attente();
         }
-        if (wait === false){
+        if (wait !== false){
           var lien=emargement();
           if (lien === null){
             sendNtfyNotification("Vous avez déjà émargé !", topic);
