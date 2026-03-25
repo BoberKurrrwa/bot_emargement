@@ -8,7 +8,7 @@ TP = "" //1, 2, 3, 4, 5 ou 6
 var username = ""
 var password = ""
 const ignoredCourses = ["Activités GCC", "Activités HACK2G2"];
-pltNotif = "Ntfy" //Ntfy ou Discord, si vous voulez envoyer des notifications
+const pltNotif = "Ntfy"; //Ntfy ou Discord, si vous voulez envoyer des notifications
 const topic = "";
 
 var ntfweek = false;
