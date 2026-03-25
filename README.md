@@ -33,7 +33,7 @@ Ensuite, les informations vous concernants :
 - `password` votre password pour la connexion à moodle
 - `ignoredCourses` Ajoutez les cours ou vous ne souhaitez pas émarger ni recevoir les notis
 - `pltNotif` Choisissez la plate-forme utilisée pour vos notifications (Ntfy ou DIscord)
-- `topic` Lien pour les notifs. Pour Ntfy, renseigné simplement le topic, pour Discord mettez l'URL complet
+- `topic` Lien pour les notifs. Pour Ntfy, renseignez simplement le topic, pour Discord mettez l'URL complet
 
 Enfin, les variables concernant les notificaitons :
 - `ntfweek` Si true -> notif en début de semaine pour avoir un résumé de la semaine 
