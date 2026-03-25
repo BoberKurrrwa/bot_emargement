@@ -19,6 +19,8 @@ Il vous faut remplir les variables définies dès le début du code :
 - `pltNotif` Choisissez la plate-forme utilisée pour vos notifications (Ntfy ou DIscord)
 - `topic` Lien pour les notifs. Pour Ntfy, renseignez simplement le topic, pour Discord mettez l'URL complet (fonctionne avec la fonction _scheduleRecap_)
 
+La mise en place de notifications est identique à celle du script pour l'[émargement](README.md)
+
 ### 2. Exécuter la fonction _scheduleRecap_ ou _globale_ et autoriser les accès à votre script :
 
 Il ne vous manque plus qu'à **Exécuter** la fonction _scheduleRecap_ ou _globale_ (la première et deuxième qui apparaîssent après avoir copié-collé le code dans Apps script puis enregistré) et de laisser les choses faire ! Cela depend simplement de votre besoin :
