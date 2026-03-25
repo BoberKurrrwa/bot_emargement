@@ -12,9 +12,11 @@ Vous pouvez également aller consulter mon code afin de [vérifier les cours ou 
 
 ## 📋 Guide d'utilisation
 
-### 1. Installer ntfy.sh :
+### 1. Notification via ntfy.sh ou Discord :
 
-[ntfy.sh](https://ntfy.sh/) va vous permettre de recevoir des messages en fonction des channels auxquels vous décidez de vous abonner. Si vous souhaiter avoir un channel uniquement pour vous, le nom du topic que vous allez utiliser servira de clé donc pensez à en utiliser un long et complexe pour ne pas tomber sur le même qu'un autre utilisateur.
+- [ntfy.sh](https://ntfy.sh/) va vous permettre de recevoir des messages en fonction des channels auxquels vous décidez de vous abonner. Si vous souhaiter avoir un channel uniquement pour vous, le nom du topic que vous allez utiliser servira de clé donc pensez à en utiliser un long et complexe pour ne pas tomber sur le même qu'un autre utilisateur. Le topic que vous allez utilisé est celui qu'il faudra renseigné dans la variable `topic`.
+
+- Si vous comptez utiliser Discord, vous pouvez utilisé des webhooks sur un serveur qui vous appartient afin d'envoyer des notifications dans un canal dédié. Pour réaliser cela, veuillez vous référer à la [documentation Discord](https://support.discord.com/hc/fr/articles/228383668-Introduction-aux-Webhooks). Dans ce cas, c'est l'URL complet qu'il faudra indiquer dans la variable `topic`.
 
 ### 2. Compléter les variables :
 
@@ -30,7 +32,8 @@ Ensuite, les informations vous concernants :
 - `username` votre username pour la connexion à moodle
 - `password` votre password pour la connexion à moodle
 - `ignoredCourses` Ajoutez les cours ou vous ne souhaitez pas émarger ni recevoir les notis
-- `topic` utilisé pour envoyer les notifs relatives au cours
+- `pltNotif` Choisissez la plate-forme utilisée pour vos notifications (Ntfy ou DIscord)
+- `topic` Lien pour les notifs. Pour Ntfy, renseigné simplement le topic, pour Discord mettez l'URL complet
 
 Enfin, les variables concernant les notificaitons :
 - `ntfweek` Si true -> notif en début de semaine pour avoir un résumé de la semaine 
