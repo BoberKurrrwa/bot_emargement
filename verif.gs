@@ -8,6 +8,7 @@ var password = "" // mettez votre mdp moodle
 const ignoredCourses1 = ["[CM] - Projet Cyber","[autonomie TD1] - Projet Cyber", "[autonomie TD2] - Projet Cyber", "[autonomie TD3] - Projet Cyber", "[BDE] Week-End de Cohésion (lundi)", "[BDE] Week-End de Cohésion (mardi)", "Lancement Le Robert : CD3+IC3 \\; CD4+IC4 (néo-entrants)", "[BDE] Réunion présentation WEC (Vannes)", "[A4 Vannes] Réunion d'information : mobilité internationale", "Activités GCC", "Activités HACK2G2", "[distanciel] Le Robert (néo-entrants+rattrapage) : certification blanche : A4+A5", "[distanciel] Le Robert - certification finale (+1/3 temps) : A4 (néo-entrants) ; A4+A5 (rattrapage)", "[A4 FISA] Examen TOEIC (session aménagée)"]; 
 
 const notif = ""; // oui ou non
+pltNotif = "Ntfy" //Ntfy ou Discord, si vous voulez envoyer des notifications
 const topic1 = ""; // topic pour ntfy.sh
 
 
@@ -63,41 +64,51 @@ function clearOldTriggers(triggered) {
 }
 
 function sendNtfyNotification(message, topic) {
-  const url = "https://ntfy.sh/" + topic;
-  const options = {
-    method: "post",
-    payload: message,
-    muteHttpExceptions: true,
-  };
-  Logger.log(message);
-  let attempt = 0;
-  const maxAttempts = 10;
-  const baseDelay = 15000; // 15 secondes d’attente entre les essais
-
-  while (true) {
-    attempt++;
-    try {
-      const response = UrlFetchApp.fetch(url, options);
-      const code = response.getResponseCode();
-
-      if (code >= 200 && code < 300) {
-        Logger.log("✅ Notification envoyée avec succès (tentative " + attempt + ")");
-        return; // succès → on sort
-      } else if (code === 429) {
-        Logger.log("⚠️ Code 429 reçu, attente avant nouvelle tentative...");
-      } else {
-        Logger.log("❌ Erreur HTTP " + code + " : " + response.getContentText());
-      }
-    } catch (e) {
-      Logger.log("⚠️ Erreur réseau : " + e.message);
+  if (pltNotif === "Ntfy"){
+    Logger.log("Vous avez Ntfy")
+    const url = "https://ntfy.sh/" + topic;
+    const options = {
+      method: "post",
+      payload: message,
+      muteHttpExceptions: true,
+    };
+    Logger.log(message);
+    const response = UrlFetchApp.fetch(url, options);
+    const code = response.getResponseCode();
+    if (code >= 200 && code < 300) {
+      Logger.log("✅ Notification envoyée avec succès");
     }
-
-    // Vérifie la limite max d’essais
-    if (attempt >= maxAttempts) {
-      Logger.log("🚨 Abandon après " + maxAttempts + " tentatives d’envoi de notification.");
-      return;
+    else {
+      Logger.log("❌ Erreur HTTP " + code + " : " + response.getContentText());
     }
-    Utilities.sleep(baseDelay);
+  }
+  
+  if (pltNotif === "Discord"){
+    Logger.log("Vous avez choisi Discord")
+    const url = topic;
+
+    var payload = {
+    content : message
+    };
+
+    const options = {
+      method: "post",
+      contentType: "application/json", 
+      payload: JSON.stringify(payload)
+    };
+    Logger.log(message);
+    const response = UrlFetchApp.fetch(url, options);
+    const code = response.getResponseCode();
+    if (code >= 200 && code < 300) {
+      Logger.log("✅ Notification envoyée avec succès");
+    }
+    else {
+      Logger.log("❌ Erreur HTTP " + code + " : " + response.getContentText());
+    }
+  }
+
+  else {
+    Logger.log("Vous n'avez choisi aucune plate-forme pour les notifications (Ntfy ou Discord)")
   }
 }
 
