@@ -16,7 +16,8 @@ Il vous faut remplir les variables définies dès le début du code :
 - `password` votre password pour la connexion à moodle
 - `ignoredCourses` Ajoutez d'autres cours si jamais j'en ai oublié (il faut mettre **exactement** le nom présent dans l'emploie du temps)
 - `notif` Si vous voulez recevoir une notification tous les vendredi à 20h des cours non-émargés (fonctionne en semaine de cours uniquement)
-- `topic` topic ntfy.sh afin de recevoir les notifs (fonctionne avec la fonction _scheduleRecap_)
+- `pltNotif` Choisissez la plate-forme utilisée pour vos notifications (Ntfy ou DIscord)
+- `topic` Lien pour les notifs. Pour Ntfy, renseignez simplement le topic, pour Discord mettez l'URL complet (fonctionne avec la fonction _scheduleRecap_)
 
 ### 2. Exécuter la fonction _scheduleRecap_ ou _globale_ et autoriser les accès à votre script :
 
